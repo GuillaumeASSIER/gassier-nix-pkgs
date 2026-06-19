@@ -1,0 +1,53 @@
+name: Update hashes
+
+on:
+  schedule:
+    # Tous les jours à 2h du matin UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      
+      - name: Check for updates
+        id: check
+        run: |
+          if nix flake update --dry-run; then
+            echo "Updates available"
+            echo "has_updates=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Update flake.lock
+        if: steps.check.outputs.has_updates == 'true'
+        run: nix flake update
+      
+      - name: Create Pull Request
+        if: steps.check.outputs.has_updates == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: 'chore(deps): update flake.lock'
+          title: 'chore(deps): update dependencies'
+          body: |
+            Automated dependency updates via GitHub Actions
+            
+            Please review the changes and merge if everything looks good.
+          branch: chore/update-deps
+          delete-branch: true
