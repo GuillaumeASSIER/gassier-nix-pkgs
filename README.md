@@ -141,7 +141,7 @@ To add a new package:
 
 ## License
 
-This repository is licensed under [MIT](LICENSE).
+This repository is licensed under [Apache 2.0](LICENSE).
 
 ## Author
 

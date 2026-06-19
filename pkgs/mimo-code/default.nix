@@ -1,3 +1,2 @@
-{ lib, callPackage }:
-
-callPackage ./package.nix { }
+{callPackage}:
+callPackage ./package.nix {}

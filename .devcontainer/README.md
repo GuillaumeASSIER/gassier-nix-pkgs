@@ -20,7 +20,6 @@ Une fois dans le devcontainer, vous aurez accès à :
 - `nix flake check` - Vérifier la configuration du flake
 - `nix build` - Construire les packages
 - `nix develop` - Entrer dans un shell de développement avec les dépendances
-- `nix-shell` - Entrer dans un shell de développement (alternative)
 
 ### Exemple d'utilisation
 
@@ -51,6 +50,6 @@ nix flake update
 
 ## Notes
 
-- L'utilisateur `nix-dev` est créé pour les opérations de développement
+- L'utilisateur `codespace` est créé pour les opérations de développement
 - Les features expérimentales de Nix sont activées pour supporter les flakes
 - Votre configuration SSH et Git locale est montée en lecture seule

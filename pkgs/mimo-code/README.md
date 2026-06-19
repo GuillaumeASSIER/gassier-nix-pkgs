@@ -9,9 +9,10 @@ MiMo-Code is a custom adaptation of a code editor. This Nix package adapts it fr
 ### Key Adaptations
 
 1. **Repository**: Changed to `XiaomiMiMo/MiMo-Code`
-2. **Simplified Dependencies**: Removed `models-dev` and other opencode-specific dependencies
-3. **Build Configuration**: Adapted for the MiMo-Code repository structure
-4. **Environment**: Environment variables renamed to `MIMO_CODE_*`
+2. **Build**: Adapted from the upstream `opencode` nixpkgs package; uses `bun install` with workspace filters, then `Bun.build({ compile })` to produce a single native binary exposed as `mimo-code`.
+3. **models-dev**: Still used (provides `_api.json` via `MODELS_DEV_API_JSON`); upstream model fetching is disabled with `OPENCODE_DISABLE_MODELS_FETCH`.
+4. **Environment**: Keeps the upstream `OPENCODE_*` variable names (`OPENCODE_VERSION`, `OPENCODE_CHANNEL`, `OPENCODE_DISABLE_MODELS_FETCH`).
+5. **Patches**: `postPatch` works around two `v0.1.1` upstream bugs (missing `mimo-free.ts` and a `prettier` import in the `generate` command).
 
 ## Installation
 

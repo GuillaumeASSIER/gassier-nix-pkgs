@@ -12,7 +12,6 @@
   writableTmpDirAsHomeHook,
   nix-update-script,
 }:
-
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "mimo-code";
   version = "0.1.1";
@@ -31,10 +30,12 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "${finalAttrs.pname}-node_modules";
     inherit (finalAttrs) version src;
 
-    impureEnvVars = lib.fetchers.proxyImpureEnvVars ++ [
-      "GIT_PROXY_COMMAND"
-      "SOCKS_SERVER"
-    ];
+    impureEnvVars =
+      lib.fetchers.proxyImpureEnvVars
+      ++ [
+        "GIT_PROXY_COMMAND"
+        "SOCKS_SERVER"
+      ];
 
     nativeBuildInputs = [
       bun
@@ -52,8 +53,16 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
       export BUN_INSTALL_CACHE_DIR=$(mktemp -d)
       bun install \
-        --cpu=${if stdenvNoCC.hostPlatform.isAarch64 then "arm64" else "x64"} \
-        --os=${if stdenvNoCC.hostPlatform.isLinux then "linux" else "darwin"} \
+        --cpu=${
+        if stdenvNoCC.hostPlatform.isAarch64
+        then "arm64"
+        else "x64"
+      } \
+        --os=${
+        if stdenvNoCC.hostPlatform.isLinux
+        then "linux"
+        else "darwin"
+      } \
         --filter '!./' \
         --filter './packages/opencode' \
         --filter './packages/desktop' \
@@ -105,6 +114,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   postPatch = ''
     # v0.1.1 bug: code imports ./mimo-free which doesn't exist in the repo (fixed in main).
     # Provide a stub so the bundler resolves the import; functionality is disabled at runtime.
+    # TODO(mimo-code>0.1.1): remove this stub once upstream ships mimo-free.ts in a tagged release.
     cat > packages/opencode/src/plugin/mimo-free.ts <<'STUB'
     import type { Hooks, PluginInput, Plugin as PluginInstance } from "@mimo-ai/plugin"
 
@@ -122,6 +132,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     # v0.1.1 bug: generate cmd imports prettier which is a root devDep, not in opencode scope.
     # Emit raw JSON instead of going through prettier; the generated spec stays valid JSON.
+    # TODO(mimo-code>0.1.1): remove this rewrite once upstream moves prettier into the opencode workspace.
     cat > packages/opencode/src/cli/cmd/generate.ts <<'GEN'
     import { Server } from "../../server/server"
     import type { CommandModule } from "yargs"
@@ -188,7 +199,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     install -Dm644 schema.json $out/share/mimo-code/schema.json
 
     wrapProgram $out/bin/mimo-code \
-      --prefix PATH : ${lib.makeBinPath [ ripgrep ]}
+      --prefix PATH : ${lib.makeBinPath [ripgrep]}
 
     runHook postInstall
   '';
@@ -211,15 +222,20 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   versionCheckProgramArg = "--version";
 
   passthru = {
-    updateScript = nix-update-script { };
+    updateScript = nix-update-script {};
   };
 
   meta = {
     description = "MiMo-Code - AI-powered coding agent (fork of opencode)";
     homepage = "https://github.com/XiaomiMiMo/MiMo-Code";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ ];
-    sourceProvenance = with lib.sourceTypes; [ fromSource ];
+    maintainers = [
+      {
+        name = "Guillaume ASSIER";
+        github = "GuillaumeASSIER";
+      }
+    ];
+    sourceProvenance = with lib.sourceTypes; [fromSource];
     platforms = [
       "aarch64-linux"
       "x86_64-linux"

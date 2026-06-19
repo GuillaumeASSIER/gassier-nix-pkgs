@@ -43,7 +43,6 @@
 
 ### 5. Development Tools
 - **.envrc**: `use flake` for automatic direnv configuration.
-- **shell.nix**: `nix-shell` fallback support.
 - **.gitignore**: Nix + Node/Bun patterns.
 
 ## Verification

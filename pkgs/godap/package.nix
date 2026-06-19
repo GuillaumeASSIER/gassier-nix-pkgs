@@ -4,7 +4,6 @@
   fetchFromGitHub,
   nix-update-script,
 }:
-
 buildGoModule rec {
   pname = "godap";
   version = "2.11.0";
@@ -28,14 +27,19 @@ buildGoModule rec {
   ];
 
   passthru = {
-    updateScript = nix-update-script { };
+    updateScript = nix-update-script {};
   };
 
   meta = {
     description = "A complete terminal user interface (TUI) for LDAP";
     homepage = "https://github.com/Macmod/godap";
     license = lib.licenses.bsd3;
-    maintainers = with lib.maintainers; [ ];
+    maintainers = [
+      {
+        name = "Guillaume ASSIER";
+        github = "GuillaumeASSIER";
+      }
+    ];
     platforms = [
       "aarch64-linux"
       "x86_64-linux"
