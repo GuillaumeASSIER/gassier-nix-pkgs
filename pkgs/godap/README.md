@@ -56,10 +56,6 @@ godap --help
 - **Source**: [Macmod/godap](https://github.com/Macmod/godap)
 - **Platforms**: Linux (x86_64, aarch64), macOS (x86_64, aarch64)
 
-## Status
-
-⚠️ **Note**: The vendor hash is currently a placeholder. See [HASH_FINALIZATION.md](HASH_FINALIZATION.md) for instructions on computing the actual vendor hash.
-
 ## Related
 
-- [mimo-code](../mimo-code) - Code editor package
+- [mimo-code](../mimo-code) - AI coding agent package

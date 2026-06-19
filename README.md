@@ -4,12 +4,19 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 
 ## Available Packages
 
+### godap (default)
+
+**Godap** is a complete terminal user interface (TUI) for LDAP written in Go.
+
+- **Source**: [Macmod/godap](https://github.com/Macmod/godap)
+- **Description**: A full-featured LDAP client with TUI interface
+
 ### mimo-code
 
-**MiMo-Code** is a code editor based on modern web technologies, forked from popular projects.
+**MiMo-Code** is an AI-powered coding agent, forked from opencode.
 
 - **Source**: [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code)
-- **Description**: A highly customizable code editor
+- **Description**: A highly customizable coding agent built with Bun
 
 ## Installation and Usage
 
@@ -63,14 +70,15 @@ Then in your `configuration.nix`:
 #### Local Build
 
 ```bash
-# Build the default package
+# Build the default package (godap)
 nix build
 
 # Build a specific package
 nix build .#mimo-code
+nix build .#godap
 
 # Run in an ephemeral environment
-nix run
+nix run .#mimo-code
 ```
 
 ### Development Environment
@@ -79,12 +87,11 @@ To work on the flake packages:
 
 ```bash
 # Enter the devshell
-nix flake show
 nix develop
 
-# Inside the devshell
-bun install
-bun run build
+# Inside the devshell you have:
+# - bun, nodejs
+# - nix-update, nix-prefetch-git, nix-prefetch (for hash computation & updates)
 ```
 
 ## Dependency Updates
@@ -120,9 +127,13 @@ To add a new package:
 ├── flake.nix              # Flake configuration
 ├── renovate.json          # Renovate Bot configuration
 ├── pkgs/
+│   ├── godap/
+│   │   ├── default.nix    # Package entry point
+│   │   └── package.nix    # Package definition
 │   └── mimo-code/
 │       ├── default.nix    # Package entry point
-│       └── package.nix    # Package definition
+│       ├── package.nix    # Package definition
+│       └── scripts/       # Upstream helper scripts (node_modules canonicalization)
 ├── README.md
 ├── LICENSE
 └── .gitignore

@@ -13,14 +13,14 @@ buildGoModule rec {
     owner = "Macmod";
     repo = "godap";
     rev = "v${version}";
-    hash = "sha256-izaog91XH72zmma+bHn/vy9sSiStz1VKXahYr2JvRVk=";
+    hash = "sha256-um9IsORwD4rPcqklEsRYI+J86R2vf7SE4RnTpaM6PnA=";
   };
 
   # To generate vendorHash:
   # 1. Set vendorHash to lib.fakeHash
   # 2. Build the derivation: nix build .#godap
   # 3. Copy the actual hash from the error message and replace lib.fakeHash
-  vendorHash = lib.fakeHash;
+  vendorHash = "sha256-D5Eq2JFIEmxO/FBGON+nKtGktWPOzXfv8l5akRTpz7Q=";
 
   ldflags = [
     "-s"

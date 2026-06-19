@@ -2,14 +2,15 @@
   lib,
   stdenvNoCC,
   bun,
+  nodejs,
   fetchFromGitHub,
   makeBinaryWrapper,
-  nodejs,
-  nix-update-script,
+  models-dev,
   ripgrep,
   installShellFiles,
   versionCheckHook,
   writableTmpDirAsHomeHook,
+  nix-update-script,
 }:
 
 stdenvNoCC.mkDerivation (finalAttrs: {
@@ -23,7 +24,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     owner = "XiaomiMiMo";
     repo = "MiMo-Code";
     rev = "v${finalAttrs.version}";
-    hash = lib.fakeHash;
+    hash = "sha256-dQHAiHg9qPIo8S4hbPFSqOVTjw1GZrOLUES1Ub1Uvek=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {
@@ -42,16 +43,26 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     dontConfigure = true;
 
+    env = {
+      BUN_INSTALL_CACHE_DIR = "$(mktemp -d)";
+    };
+
     buildPhase = ''
       runHook preBuild
 
       export BUN_INSTALL_CACHE_DIR=$(mktemp -d)
       bun install \
-        --cpu="*" \
-        --frozen-lockfile \
+        --cpu=${if stdenvNoCC.hostPlatform.isAarch64 then "arm64" else "x64"} \
+        --os=${if stdenvNoCC.hostPlatform.isLinux then "linux" else "darwin"} \
+        --filter '!./' \
+        --filter './packages/opencode' \
+        --filter './packages/desktop' \
+        --filter './packages/app' \
+        --filter './packages/shared' \
         --ignore-scripts \
-        --no-progress \
-        --os="*"
+        --no-progress
+      bun --bun ${./scripts/canonicalize-node-modules.ts}
+      bun --bun ${./scripts/normalize-bun-binaries.ts}
 
       runHook postBuild
     '';
@@ -67,7 +78,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     dontFixup = true;
 
-    outputHash = lib.fakeHash;
+    outputHash = "sha256-UHtkejWA6iVJOzKcvQr7+LOSO6mtOIF/XdHNKzujThM=";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };
@@ -77,6 +88,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     nodejs
     installShellFiles
     makeBinaryWrapper
+    models-dev
     writableTmpDirAsHomeHook
   ];
 
@@ -85,18 +97,85 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     cp -R ${finalAttrs.node_modules}/. .
     patchShebangs node_modules
+    patchShebangs packages/*/node_modules
 
     runHook postConfigure
   '';
 
-  env.MIMO_CODE_VERSION = finalAttrs.version;
-  env.MIMO_CODE_CHANNEL = "stable";
+  postPatch = ''
+    # v0.1.1 bug: code imports ./mimo-free which doesn't exist in the repo (fixed in main).
+    # Provide a stub so the bundler resolves the import; functionality is disabled at runtime.
+    cat > packages/opencode/src/plugin/mimo-free.ts <<'STUB'
+    import type { Hooks, PluginInput, Plugin as PluginInstance } from "@mimo-ai/plugin"
+
+    export const MimoFreeAuthPlugin: PluginInstance = async (_input: PluginInput) => {
+      return {} as Hooks
+    }
+
+    export const MimoFree = {
+      chatBaseUrl: "",
+      async verify(): Promise<{ fingerprint: string; exp: number }> {
+        throw new Error("mimo-free plugin not available in this build")
+      },
+    }
+    STUB
+
+    # v0.1.1 bug: generate cmd imports prettier which is a root devDep, not in opencode scope.
+    # Emit raw JSON instead of going through prettier; the generated spec stays valid JSON.
+    cat > packages/opencode/src/cli/cmd/generate.ts <<'GEN'
+    import { Server } from "../../server/server"
+    import type { CommandModule } from "yargs"
+
+    export const GenerateCommand = {
+      command: "generate",
+      handler: async () => {
+        const specs = await Server.openapi()
+        for (const item of Object.values(specs.paths)) {
+          for (const method of ["get", "post", "put", "delete", "patch"] as const) {
+            const operation = item[method]
+            if (!operation?.operationId) continue
+            // @ts-expect-error
+            operation["x-codeSamples"] = [
+              {
+                lang: "js",
+                source: [
+                  `import { createOpencodeClient } from "@mimo-ai/sdk`,
+                  ``,
+                  `const client = createOpencodeClient()`,
+                  `await client.''${operation.operationId}({`,
+                  `  ...`,
+                  `})`,
+                ].join("\n"),
+              },
+            ]
+          }
+        }
+        const raw = JSON.stringify(specs, null, 2)
+
+        await new Promise<void>((resolve, reject) => {
+          process.stdout.write(raw, (err) => {
+            if (err) reject(err)
+            else resolve()
+          })
+        })
+      },
+    } satisfies CommandModule
+    GEN
+  '';
+
+  env = {
+    MODELS_DEV_API_JSON = "${models-dev}/dist/_api.json";
+    OPENCODE_DISABLE_MODELS_FETCH = true;
+    OPENCODE_VERSION = finalAttrs.version;
+    OPENCODE_CHANNEL = "stable";
+  };
 
   buildPhase = ''
     runHook preBuild
 
-    bun install --no-save
-    bun run build
+    cd ./packages/opencode
+    bun --bun ./script/build.ts --single --skip-install
+    bun --bun ./script/schema.ts schema.json
 
     runHook postBuild
   '';
@@ -104,34 +183,39 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/bin $out/share/mimo-code
+    # Upstream build produces dist/mimocode-{os}-{arch}/bin/mimo; expose it as `mimo-code`.
+    install -Dm755 dist/*/bin/mimo $out/bin/mimo-code
+    install -Dm644 schema.json $out/share/mimo-code/schema.json
 
-    if [ -d "dist" ]; then
-      cp -r dist/* $out/share/mimo-code/
-    elif [ -d "build" ]; then
-      cp -r build/* $out/share/mimo-code/
-    fi
-
-    makeWrapper ${nodejs}/bin/node \
-      $out/bin/mimo-code \
-      --add-flags "$out/share/mimo-code/bin/mimo-code.js" \
-      --prefix PATH : ${
-        lib.makeBinPath [
-          ripgrep
-        ]
-      }
+    wrapProgram $out/bin/mimo-code \
+      --prefix PATH : ${lib.makeBinPath [ ripgrep ]}
 
     runHook postInstall
   '';
 
-  dontInstallCheck = true;
+  postInstall = lib.optionalString (stdenvNoCC.buildPlatform.canExecute stdenvNoCC.hostPlatform) ''
+    installShellCompletion --cmd mimo-code \
+      --bash <($out/bin/mimo-code completion) \
+      --zsh <(SHELL=/bin/zsh $out/bin/mimo-code completion)
+  '';
+
+  nativeInstallCheckInputs = [
+    versionCheckHook
+    writableTmpDirAsHomeHook
+  ];
+  doInstallCheck = true;
+  versionCheckKeepEnvironment = [
+    "HOME"
+    "OPENCODE_DISABLE_MODELS_FETCH"
+  ];
+  versionCheckProgramArg = "--version";
 
   passthru = {
     updateScript = nix-update-script { };
   };
 
   meta = {
-    description = "MiMo-Code - A code editor based on modern web technologies";
+    description = "MiMo-Code - AI-powered coding agent (fork of opencode)";
     homepage = "https://github.com/XiaomiMiMo/MiMo-Code";
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ ];

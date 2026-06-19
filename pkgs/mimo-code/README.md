@@ -44,68 +44,52 @@ mimo-code
 
 ## Runtime Dependencies
 
-- `bun` - JavaScript runtime with Bun
-- `nodejs` - JavaScript/Node.js runtime
-- `ripgrep` (rg) - Fast file search
+- `ripgrep` (rg) - Fast file search (wrapped into PATH)
 
 ## Build Architecture
 
-1. **`node_modules` Phase**: 
-   - Installs npm dependencies via `bun install`
-   - Creates reproducible Node modules output
+The package builds MiMo-Code from source, closely following the upstream `nix/`
+packaging. Two derivations are composed:
 
-2. **`configure` Phase**: 
-   - Copies precompiled `node_modules`
-   - Patches shebangs
+1. **`node_modules` derivation** (fixed-output):
+   - Filters workspaces with `bun install --filter ./packages/opencode ...`
+   - Runs the upstream `canonicalize-node-modules` and `normalize-bun-binaries`
+     scripts so the store output is reproducible.
+   - Pinned via `outputHash` (recursive sha256).
 
-3. **`build` Phase**: 
-   - Runs `bun install` to finalize installation
-   - Executes build scripts (`bun run build`)
-
-4. **`install` Phase**: 
-   - Copies build artifacts to `$out/share/mimo-code/`
-   - Creates a wrapper to execute the binary
-   - Exposes `mimo-code` command in PATH
-
-## Debugging
-
-### Show Build Steps
-
-```bash
-nix build -L
-```
-
-### Interactive Shell with Source Code
-
-```bash
-nix develop
-```
-
-### Build in Debug Mode
-
-```bash
-nix build --no-link -L 2>&1 | less
-```
+2. **Main derivation**:
+   - `configurePhase`: copies the prebuilt `node_modules` over the source and
+     patches shebangs.
+   - `postPatch`: stubs the missing `packages/opencode/src/plugin/mimo-free.ts`
+     and removes the `prettier` import from the `generate` command (both are
+     v0.1.1 upstream bugs, fixed in `main`).
+   - `buildPhase`: runs `bun --bun ./script/build.ts --single --skip-install`
+     inside `packages/opencode` to compile a single native binary via
+     `Bun.build({ compile })`, plus `script/schema.ts schema.json`.
+   - `installPhase`: exposes the compiled binary as `mimo-code` (the upstream
+     binary is named `mimo`) and installs the JSON schema under
+     `$out/share/mimo-code`.
+   - Shell completions are generated for bash and zsh.
 
 ## Updating
 
-### Automated via Renovate
+Use the standard Nix tooling from the devShell:
 
-Update pull requests are created automatically for:
-- Repository version changes
-- Dependency updates
+```bash
+nix-update mimo-code
+# or, for godap:
+nix-update godap
+```
 
-### Manual
+See [MAINTENANCE.md](../MAINTENANCE.md) for manual instructions.
 
-See [MAINTENANCE.md](../MAINTENANCE.md) for instructions.
+## Known Limitations
 
-## Current Limitations
-
-- Repository hash uses `lib.fakeHash` (replaced with real hash during build)
-- `node_modules` hash uses `lib.fakeHash` (replaced with real hash during build)
-- Installation checks disabled (`dontInstallCheck = true`)
-
-These limitations are due to the dynamic nature of JavaScript builds and may be refined later.
+- The `mimo-free` auth plugin is stubbed out in this build (the upstream
+  `v0.1.1` tag references a file that is not committed to the repository). The
+  `mimo-free` provider choice will raise at runtime; use `mimo` instead.
+- The `generate` command emits raw JSON (prettier formatting is skipped, see
+  `postPatch` in `package.nix`).
 
 ## Contributing
 

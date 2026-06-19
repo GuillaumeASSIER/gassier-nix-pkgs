@@ -22,7 +22,9 @@
           buildInputs = with pkgs; [
             bun
             nodejs
-            nix-update-script
+            nix-update
+            nix-prefetch-git
+            nix-prefetch
           ];
         };
       }

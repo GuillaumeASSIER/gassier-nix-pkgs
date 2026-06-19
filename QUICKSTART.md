@@ -51,9 +51,8 @@ nix develop
 cd .
 
 # You now have access to:
-# - bun
-# - nodejs
-# - nix-update-script
+# - bun, nodejs
+# - nix-update, nix-prefetch-git, nix-prefetch
 ```
 
 ## Updating Packages

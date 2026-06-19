@@ -1,136 +1,68 @@
-# 📋 Setup Summary
+# Setup Summary
 
-## What Has Been Configured ✅
+## What Has Been Configured
 
 ### 1. Nix Flake Structure
-- **flake.nix** : Flake definition with package support
-- `mimo-code` package configured as default
-- `devShells` for development with bun and nodejs
+- **flake.nix**: Flake definition exposing two packages and a devShell.
+- `godap` is the default package; `mimo-code` is the second one.
+- `devShells.default` provides `bun`, `nodejs`, `nix-update`, `nix-prefetch-git`
+  and `nix-prefetch` for maintenance.
 
-### 2. MiMo-Code Package
-- **pkgs/mimo-code/package.nix** : Adaptation of the original opencode package for MiMo-Code
-- **pkgs/mimo-code/default.nix** : Package entry point
-- **pkgs/mimo-code/README.md** : Package documentation
-- Basics:
-  - Repository: XiaomiMiMo/MiMo-Code
-  - Built with Bun and Node.js
-  - Dependencies: ripgrep, nodejs, bun
-  - Platforms: Linux (x86_64, aarch64), macOS (x86_64, aarch64)
+### 2. Packages
+
+#### godap (default)
+- **pkgs/godap/package.nix**: `buildGoModule` derivation for the LDAP TUI.
+- Source: Macmod/godap v2.11.0
+- Both `src` and `vendorHash` are pinned and verified to build.
+
+#### mimo-code
+- **pkgs/mimo-code/package.nix**: `stdenvNoCC.mkDerivation` adapted from the
+  upstream `nix/opencode.nix` packaging.
+- Source: XiaomiMiMo/MiMo-Code v0.1.1
+- Build: filtered `bun install` -> `bun --bun ./script/build.ts --single
+  --skip-install` -> compiled native binary exposed as `mimo-code`.
+- `node_modules` is a fixed-output derivation pinned via `outputHash`.
+- `postPatch` works around two v0.1.1 upstream bugs (missing
+  `packages/opencode/src/plugin/mimo-free.ts` and `prettier` import in the
+  `generate` command).
+- Helper scripts `canonicalize-node-modules.ts` and
+  `normalize-bun-binaries.ts` are vendored under
+  `pkgs/mimo-code/scripts/` so the derivation is self-contained.
 
 ### 3. Automation & CI/CD
-- **renovate.json** : Renovate Bot configuration with:
-  - Weekly dependency updates
-  - Auto-merge for TypeScript types and devDeps
-  - Security alerts
-  - Semantic commits
-  
-- **GitHub Actions Workflows** (.github/workflows/):
-  - **ci.yml** : Flake verification and package builds
-  - **renovate.yml** : Renovate Bot execution
-  - **update-deps.yml** : Daily update checks
+- **renovate.json**: Renovate Bot configuration (weekly updates, auto-merge
+  for types/devDeps, semantic commits).
+- **.github/workflows/**: CI flake check, Renovate Bot execution, daily update
+  checks.
 
 ### 4. Documentation
-- **README.md** : Main installation and usage guide
-- **QUICKSTART.md** : Quick start guide
-- **MAINTENANCE.md** : Package maintenance and hash update guide
-- **CONTRIBUTING.md** : Contribution guide
+- **README.md**: Main installation and usage guide.
+- **QUICKSTART.md**: Quick start guide.
+- **MAINTENANCE.md**: Package maintenance and hash update guide.
+- **CONTRIBUTING.md**: Contribution guide.
 
 ### 5. Development Tools
-- **.envrc** : Automatic direnv configuration
-- **shell.nix** : nix-shell support
-- **.gitignore** : Nix + Node/Bun patterns
+- **.envrc**: `use flake` for automatic direnv configuration.
+- **shell.nix**: `nix-shell` fallback support.
+- **.gitignore**: Nix + Node/Bun patterns.
 
-## 📝 Next Steps
-
-1. **Enable Renovate Bot** on GitHub:
-   - Install the Renovate application from https://github.com/apps/renovate
-   - Configure permissions in your repository
-
-2. **Verify the flake locally** (with Nix installed):
-   ```bash
-   nix flake show
-   nix flake check
-   ```
-
-3. **Update hashes** (see MAINTENANCE.md):
-   - `lib.fakeHash` will be replaced with real hashes during build
-   - Run `nix build .#mimo-code 2>&1 | grep "got:"`
-
-4. **Configure GitHub secrets** if needed:
-   - Workflows use `secrets.GITHUB_TOKEN` (standard)
-
-## 🎯 Architecture
-
-```
-gassier-nix-pkgs/
-├── flake.nix              # Flake definition
-├── renovate.json          # Update configuration
-├── .envrc                 # direnv configuration
-├── shell.nix              # nix-shell support
-├── .github/workflows/     # GitHub Actions workflows
-│   ├── ci.yml
-│   ├── renovate.yml
-│   └── update-deps.yml
-├── pkgs/
-│   └── mimo-code/
-│       ├── default.nix
-│       ├── package.nix
-│       └── README.md
-├── docs/
-│   ├── README.md
-│   ├── QUICKSTART.md
-│   ├── MAINTENANCE.md
-│   └── CONTRIBUTING.md
-└── LICENSE
-```
-
-## 🔧 Useful Commands
+## Verification
 
 ```bash
-# Show available packages
-nix flake show
-
-# Build a package
+nix flake show       # list outputs
+nix flake check      # check all systems (use --all-systems for cross-arch)
+nix build            # build the default package (godap)
 nix build .#mimo-code
+nix run .#mimo-code -- --version
+```
+
+## Useful Commands
+
+```bash
+# Update a package's version (from the devShell)
+nix-update mimo-code
+nix-update godap
 
 # Enter the devshell
 nix develop
-
-# Run with direnv (after direnv allow)
-cd .
-
-# Check syntax
-nix flake check
 ```
-
-## 📦 Created Packages
-
-### mimo-code (default)
-- **Description**: Code editor based on modern web technologies
-- **Source**: https://github.com/XiaomiMiMo/MiMo-Code
-- **Adaptation**: opencode package adapted with reduced dependencies
-- **Status**: ✅ Structure ready (hashes to finalize with first build)
-
-## 🤖 Automation
-
-### Renovate Bot
-- Automatic dependency updates
-- PRs generated automatically every Monday
-- Auto-merge for TypeScript types and devDeps
-- Security alerts with specific label
-
-### GitHub Actions
-- Automatic CI on push and PR
-- Daily update checks
-- Weekly Renovate Bot execution
-
-## ⚠️ Important Notes
-
-- Hashes use `lib.fakeHash` temporarily
-- To be replaced after successful first build
-- CI/CD workflows require Nix installed on runners
-- Renovate Bot must be installed as a GitHub App
-
----
-Setup generated: 2026-06-16
-Repository: GuillaumeASSIER/gassier-nix-pkgs
