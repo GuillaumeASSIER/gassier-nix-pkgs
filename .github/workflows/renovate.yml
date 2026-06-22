@@ -2,8 +2,8 @@ name: Renovate
 
 on:
   schedule:
-    # Exécute Renovate chaque lundi à 3h du matin
-    - cron: '0 3 * * 1'
+    # Exécute Renovate tous les jours à 3h du matin
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 jobs:
