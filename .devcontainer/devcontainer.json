@@ -1,0 +1,39 @@
+{
+  "name": "Nix Development Environment",
+  "dockerfile": "Dockerfile",
+  "context": "..",
+  "remoteUser": "codespace",
+  "remoteEnv": {
+    "PATH": "/home/codespace/.nix-profile/bin:${containerEnv:PATH}"
+  },
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "jnoortheen.nix-ide",
+        "bbenoist.Nix",
+        "mkhl.direnv"
+      ],
+      "settings": {
+        "nix.enableLanguageServer": true,
+        "[nix]": {
+          "editor.defaultFormatter": "jnoortheen.nix-ide",
+          "editor.formatOnSave": true
+        }
+      }
+    }
+  },
+  
+  "forwardPorts": [],
+  "postCreateCommand": "bash -c 'source $HOME/.nix-profile/etc/profile.d/nix.sh && nix flake update --flake /workspaces/gassier-nix-pkgs'",
+  "postStartCommand": "bash -c 'source $HOME/.nix-profile/etc/profile.d/nix.sh'",
+  
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/codespace/.ssh,readonly",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/codespace/.gitconfig,readonly"
+  ]
+}

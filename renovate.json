@@ -1,0 +1,72 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "schedule:weekly"
+  ],
+  "semanticCommits": true,
+  "semanticCommitScope": "deps",
+  "commitMessagePrefix": "chore(deps): ",
+  "prCreation": "not-pending",
+  "prConcurrentLimit": 10,
+  "prBodyColumns": [
+    "Package",
+    "Type",
+    "Update",
+    "Change"
+  ],
+  "groupName": "Dependencies",
+  "groupSlug": "dependencies",
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "npm"
+      ],
+      "excludePackagePatterns": [
+        "^@types/"
+      ],
+      "groupName": "Production dependencies",
+      "groupSlug": "prod-deps"
+    },
+    {
+      "matchDatasources": [
+        "npm"
+      ],
+      "matchPackagePatterns": [
+        "^@types/"
+      ],
+      "groupName": "TypeScript types",
+      "groupSlug": "typescript-types",
+      "automerge": true
+    },
+    {
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "groupName": "Dev dependencies",
+      "groupSlug": "dev-deps",
+      "automerge": true
+    },
+    {
+      "matchDatasources": [
+        "github-tags"
+      ],
+      "groupName": "GitHub dependencies",
+      "groupSlug": "github-deps"
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": [
+      "security"
+    ]
+  },
+  "ignoreDeps": [],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.next/**"
+  ],
+  "recreateClosed": false,
+  "rebaseWhen": "behind-base-branch"
+}

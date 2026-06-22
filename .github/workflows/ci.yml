@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  flake-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v17
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@v9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Nix flake check
+        run: nix flake check --all-systems
+
+      - name: Show flake
+        run: nix flake show
+
+  build-packages:
+    runs-on: ubuntu-latest
+    needs: flake-check
+    strategy:
+      matrix:
+        package:
+          - mimo-code
+          - default
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v17
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@v9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build ${{ matrix.package }}
+        run: nix build .#${{ matrix.package }} -L
