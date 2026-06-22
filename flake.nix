@@ -21,6 +21,9 @@
     in {
       godap = pkgs.callPackage ./pkgs/godap {};
       mimo-code = pkgs.callPackage ./pkgs/mimo-code {};
+      opencode = pkgs.callPackage ./pkgs/opencode {};
+      codex = pkgs.callPackage ./pkgs/codex {};
+      pi-coding-agent = pkgs.callPackage ./pkgs/pi-coding-agent {};
       default = self.packages.${system}.godap;
     });
 
@@ -43,6 +46,9 @@
     overlays.default = final: prev: {
       godap = self.packages.${final.system}.godap;
       mimo-code = self.packages.${final.system}.mimo-code;
+      opencode = self.packages.${final.system}.opencode;
+      codex = self.packages.${final.system}.codex;
+      pi-coding-agent = self.packages.${final.system}.pi-coding-agent;
     };
   };
 }
