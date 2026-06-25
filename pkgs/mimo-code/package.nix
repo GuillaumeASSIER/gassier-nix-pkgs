@@ -14,7 +14,7 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "mimo-code";
-  version = "0.1.1";
+  version = "0.1.2";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -23,7 +23,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     owner = "XiaomiMiMo";
     repo = "MiMo-Code";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-dQHAiHg9qPIo8S4hbPFSqOVTjw1GZrOLUES1Ub1Uvek=";
+    hash = "sha256-UcBu/mw1kUnnJ0nIf/3SbuxJ/e29rBlww16ZyJ/D2M8=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {
@@ -87,7 +87,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     dontFixup = true;
 
-    outputHash = "sha256-UHtkejWA6iVJOzKcvQr7+LOSO6mtOIF/XdHNKzujThM=";
+    outputHash = "sha256-nlvYeJ99tgUujguXBa4MO2F8d3nYWPB6fdn/F4DQ4Ko=";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };
@@ -112,9 +112,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   '';
 
   postPatch = ''
-    # v0.1.1 bug: code imports ./mimo-free which doesn't exist in the repo (fixed in main).
+    # v0.1.2 bug: code imports ./mimo-free which doesn't exist in the repo.
     # Provide a stub so the bundler resolves the import; functionality is disabled at runtime.
-    # TODO(mimo-code>0.1.1): remove this stub once upstream ships mimo-free.ts in a tagged release.
+    # TODO(mimo-code>0.1.2): remove this stub once upstream ships mimo-free.ts in a tagged release.
     cat > packages/opencode/src/plugin/mimo-free.ts <<'STUB'
     import type { Hooks, PluginInput, Plugin as PluginInstance } from "@mimo-ai/plugin"
 
@@ -130,9 +130,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     }
     STUB
 
-    # v0.1.1 bug: generate cmd imports prettier which is a root devDep, not in opencode scope.
+    # v0.1.2 bug: generate cmd imports prettier which is a root devDep, not in opencode scope.
     # Emit raw JSON instead of going through prettier; the generated spec stays valid JSON.
-    # TODO(mimo-code>0.1.1): remove this rewrite once upstream moves prettier into the opencode workspace.
+    # TODO(mimo-code>0.1.2): remove this rewrite once upstream moves prettier into the opencode workspace.
     cat > packages/opencode/src/cli/cmd/generate.ts <<'GEN'
     import { Server } from "../../server/server"
     import type { CommandModule } from "yargs"
@@ -176,9 +176,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   env = {
     MODELS_DEV_API_JSON = "${models-dev}/dist/_api.json";
-    OPENCODE_DISABLE_MODELS_FETCH = true;
-    OPENCODE_VERSION = finalAttrs.version;
-    OPENCODE_CHANNEL = "stable";
+    MIMOCODE_DISABLE_MODELS_FETCH = true;
+    MIMOCODE_VERSION = finalAttrs.version;
+    MIMOCODE_CHANNEL = "stable";
   };
 
   buildPhase = ''
@@ -217,7 +217,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   doInstallCheck = true;
   versionCheckKeepEnvironment = [
     "HOME"
-    "OPENCODE_DISABLE_MODELS_FETCH"
+    "MIMOCODE_DISABLE_MODELS_FETCH"
   ];
   versionCheckProgramArg = "--version";
 
