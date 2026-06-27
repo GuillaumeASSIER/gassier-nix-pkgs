@@ -7,6 +7,7 @@
   makeBinaryWrapper,
   models-dev,
   ripgrep,
+  git,
   installShellFiles,
   versionCheckHook,
   writableTmpDirAsHomeHook,
@@ -14,7 +15,7 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "mimo-code";
-  version = "0.1.1";
+  version = "0.1.3";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -23,7 +24,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     owner = "XiaomiMiMo";
     repo = "MiMo-Code";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-dQHAiHg9qPIo8S4hbPFSqOVTjw1GZrOLUES1Ub1Uvek=";
+    hash = "sha256-2r6CyuzASDahMqmBFrcoSEkIOASKEZmom2C3rt0e/ac=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {
@@ -87,7 +88,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     dontFixup = true;
 
-    outputHash = "sha256-UHtkejWA6iVJOzKcvQr7+LOSO6mtOIF/XdHNKzujThM=";
+    outputHash = "sha256-5jqls5FGnwkL3UCgIIHVwK93lVMHq1dRcK1aF514KnU=";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };
@@ -95,6 +96,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   nativeBuildInputs = [
     bun
     nodejs
+    git
     installShellFiles
     makeBinaryWrapper
     models-dev
@@ -112,6 +114,11 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   '';
 
   postPatch = ''
+    # v0.1.3: script/index.ts hard-errors if bun < 1.3.14, but nixpkgs-unstable still ships 1.3.13.
+    # Strip the version check; the script's runtime behavior is identical on patch versions.
+    # TODO(mimo-code>0.1.3): remove this rewrite once nixpkgs ships bun >= 1.3.14.
+    sed -i '/^if (!semver.satisfies(process.versions.bun, expectedBunVersionRange)) {$/,/^}$/d' packages/script/src/index.ts
+
     # v0.1.1 bug: code imports ./mimo-free which doesn't exist in the repo (fixed in main).
     # Provide a stub so the bundler resolves the import; functionality is disabled at runtime.
     # TODO(mimo-code>0.1.1): remove this stub once upstream ships mimo-free.ts in a tagged release.
@@ -179,6 +186,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     OPENCODE_DISABLE_MODELS_FETCH = true;
     OPENCODE_VERSION = finalAttrs.version;
     OPENCODE_CHANNEL = "stable";
+    MIMOCODE_VERSION = finalAttrs.version;
+    MIMOCODE_CHANNEL = "stable";
   };
 
   buildPhase = ''
