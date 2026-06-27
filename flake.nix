@@ -21,6 +21,7 @@
     in {
       godap = pkgs.callPackage ./pkgs/godap {};
       mimo-code = pkgs.callPackage ./pkgs/mimo-code {};
+      oh-my-openagent = pkgs.callPackage ./pkgs/oh-my-openagent {};
       default = self.packages.${system}.godap;
     });
 
@@ -43,6 +44,7 @@
     overlays.default = final: prev: {
       godap = self.packages.${final.system}.godap;
       mimo-code = self.packages.${final.system}.mimo-code;
+      oh-my-openagent = self.packages.${final.system}.oh-my-openagent;
     };
   };
 }
