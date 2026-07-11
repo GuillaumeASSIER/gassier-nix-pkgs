@@ -1,0 +1,116 @@
+# AGENTS.md
+
+Personal Nix flake repository hosting custom packages at their latest stable versions.
+
+## Quick reference
+
+```bash
+# Build a package
+nix build .#<pkg>
+
+# Run without installing
+nix run .#<pkg>
+
+# Format code (alejandra)
+nix fmt
+
+# Validate the flake
+nix flake check
+
+# Enter devshell (provides nix-update, nix-prefetch, bun, nodejs)
+nix develop
+```
+
+## Packages
+
+| Package | Builder | Hashes to update on bump |
+| --- | --- | --- |
+| godap | `buildGoModule` | `src.hash`, `vendorHash` |
+| mimo-code | `stdenvNoCC` | `src.hash`, `node_modules.outputHash` |
+| oh-my-openagent | `stdenvNoCC` | `src.hash` (fetchurl npm), `platformSrc.hash` |
+| pi-coding-agent | `buildNpmPackage` | `src.hash`, `npmDepsHash` |
+| torlink | `buildNpmPackage` | `src.hash`, `npmDepsHash`, `nodeDatachannelPrebuilt.hash` |
+
+## Bumping versions
+
+### Method 1 — `nix-update` (preferred, fastest)
+
+`nix-update` auto-detects the latest version, updates the `version` field, and recomputes all hashes. Available in the devshell.
+
+```bash
+nix develop
+
+# Auto-detect latest GitHub release and bump:
+nix-update --flake --version=unstable godap
+
+# Bump to a specific version:
+nix-update --flake godap 2.11.1
+
+# Auto-commit the change:
+nix-update --flake --commit --version=unstable godap
+```
+
+Works for all packages with a `passthru.updateScript` (godap, mimo-code, oh-my-openagent, pi-coding-agent).
+
+> **torlink** has no `updateScript` yet — use Method 2 for it, or add `passthru.updateScript = nix-update-script {};` first.
+
+### Method 2 — Manual `lib.fakeHash` (fallback)
+
+Use this when `nix-update` fails or for packages without an `updateScript`.
+
+```bash
+# 1. Edit pkgs/<pkg>/package.nix: set the new version AND all hashes to lib.fakeHash
+#    e.g. for buildNpmPackage:
+#      version = "1.4.0";
+#      hash = lib.fakeHash;
+#      npmDepsHash = lib.fakeHash;
+
+# 2. Build — the error message reveals the correct hash:
+nix build .#<pkg>
+# → error: hash mismatch ... got: sha256-abc123...
+
+# 3. Replace lib.fakeHash with the "got" hash, repeat for each hash field.
+
+# 4. Once all hashes are correct, the build succeeds. Verify:
+nix run .#<pkg> -- --version
+```
+
+Each `lib.fakeHash` in the file produces one error → one correct hash. Replace them one at a time, rebuilding after each.
+
+### Method 3 — `nix run .#<pkg>.updateScript` (interactive)
+
+Packages with `passthru.updateScript` support an interactive updater:
+
+```bash
+nix run .#godap.updateScript
+```
+
+This opens a shell script that downloads the new source, computes hashes, and stages a git commit.
+
+### What to update after bumping
+
+1. **package.nix** — version + hashes (done by `nix-update` automatically)
+2. **README.md** — update the version in the "Available Packages" table
+
+## Adding a new package
+
+1. Create `pkgs/<name>/default.nix`:
+   ```nix
+   { callPackage }:
+   callPackage ./package.nix { }
+   ```
+2. Create `pkgs/<name>/package.nix` — use an existing package as a template
+3. Register in `flake.nix`:
+   - Add `my-pkg = pkgs.callPackage ./pkgs/my-pkg {};` in the `packages` set
+   - Add `my-pkg = self.packages.${final.system}.my-pkg;` in the `overlays.default` set
+4. Add a row to the README "Available Packages" table
+5. Test: `nix build .#my-pkg`
+
+## Conventions
+
+- **Language**: README, commit messages, and code comments in English.
+- **Commits**: conventional-commit style (`feat:`, `fix:`, `chore:`). Examples: `feat: Adding torlink`, `chore: Bump mimo to 0.1.3`.
+- **Formatting**: `alejandra` via `nix fmt` — run before committing.
+- **Hashes**: always use SRI format (`sha256-...=`). Never use legacy base32 hashes.
+- **Maintainer**: `Guillaume ASSIER` / `GuillaumeASSIER`.
+- **Renovate Bot**: configured in `renovate.json` for automated dependency PRs.

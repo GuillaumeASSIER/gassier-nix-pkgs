@@ -6,10 +6,12 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 
 | Package | Version | Source |
 | --- | --- | --- |
-| godap | 2.11.0 | [Macmod/godap](https://github.com/Macmod/godap) |
-| mimo-code | 0.1.3 | [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) |
-| oh-my-openagent | 4.13.0 | [code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) |
-| torlink | 1.2.0 | [baairon/torlink](https://github.com/baairon/torlink) |
+| godap | 2.11.1 | [Macmod/godap](https://github.com/Macmod/godap) |
+| mimo-code | 0.1.5 | [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) |
+| oh-my-openagent | 4.16.3 | [code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) |
+| pi-coding-agent | 0.80.6 | [earendil-works/pi](https://github.com/earendil-works/pi) |
+| murmure | 1.10.1 | [Kieierra/murmure](https://github.com/Kieirra/murmure) |
+| torlink | 1.4.0 | [baairon/torlink](https://github.com/baairon/torlink) |
 
 ## Installation and Usage
 
