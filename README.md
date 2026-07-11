@@ -4,19 +4,12 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 
 ## Available Packages
 
-### godap (default)
-
-**Godap** is a complete terminal user interface (TUI) for LDAP written in Go.
-
-- **Source**: [Macmod/godap](https://github.com/Macmod/godap)
-- **Description**: A full-featured LDAP client with TUI interface
-
-### mimo-code
-
-**MiMo-Code** is an AI-powered coding agent, forked from opencode.
-
-- **Source**: [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code)
-- **Description**: A highly customizable coding agent built with Bun
+| Package | Version | Source |
+| --- | --- | --- |
+| godap | 2.11.0 | [Macmod/godap](https://github.com/Macmod/godap) |
+| mimo-code | 0.1.3 | [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) |
+| oh-my-openagent | 4.13.0 | [code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) |
+| torlink | 1.2.0 | [baairon/torlink](https://github.com/baairon/torlink) |
 
 ## Installation and Usage
 
