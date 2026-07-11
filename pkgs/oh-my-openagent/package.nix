@@ -7,16 +7,16 @@
   nix-update-script,
 }: let
   pname = "oh-my-openagent";
-  version = "4.13.0";
+  version = "4.16.3";
 
   src = fetchurl {
     url = "https://registry.npmjs.org/oh-my-opencode/-/oh-my-opencode-${version}.tgz";
-    hash = "sha256-jYVysWA86RXVty9CRxUXuejX4QPe0CNII2N57somn8w=";
+    hash = "sha256-pwkG4heiOFSRL2lSrkg8R4knwi/XEdzG8LsvqI0Kh8Q=";
   };
 
   platformSrc = fetchurl {
     url = "https://registry.npmjs.org/oh-my-opencode-linux-x64/-/oh-my-opencode-linux-x64-${version}.tgz";
-    hash = "sha256-5zjYNnD1JyDLFofEw2qyL8ZJBocj02ueU9QkXKopq+E=";
+    hash = "sha256-dL5+TIXQXEV0S1Fsv2heQ/vvP+WnBsfPeG3uPf6Tk+k=";
   };
 in
   stdenvNoCC.mkDerivation {
