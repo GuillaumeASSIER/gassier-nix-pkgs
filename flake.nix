@@ -22,6 +22,7 @@
       godap = pkgs.callPackage ./pkgs/godap {};
       mimo-code = pkgs.callPackage ./pkgs/mimo-code {};
       oh-my-openagent = pkgs.callPackage ./pkgs/oh-my-openagent {};
+      torlink = pkgs.callPackage ./pkgs/torlink {};
       default = self.packages.${system}.godap;
     });
 
@@ -45,6 +46,7 @@
       godap = self.packages.${final.system}.godap;
       mimo-code = self.packages.${final.system}.mimo-code;
       oh-my-openagent = self.packages.${final.system}.oh-my-openagent;
+      torlink = self.packages.${final.system}.torlink;
     };
   };
 }
