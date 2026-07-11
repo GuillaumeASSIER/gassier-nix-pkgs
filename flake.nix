@@ -23,6 +23,8 @@
       mimo-code = pkgs.callPackage ./pkgs/mimo-code {};
       oh-my-openagent = pkgs.callPackage ./pkgs/oh-my-openagent {};
       torlink = pkgs.callPackage ./pkgs/torlink {};
+      pi-coding-agent = pkgs.callPackage ./pkgs/pi-coding-agent {};
+      murmure = pkgs.callPackage ./pkgs/murmure {};
       default = self.packages.${system}.godap;
     });
 
@@ -47,6 +49,8 @@
       mimo-code = self.packages.${final.system}.mimo-code;
       oh-my-openagent = self.packages.${final.system}.oh-my-openagent;
       torlink = self.packages.${final.system}.torlink;
+      pi-coding-agent = self.packages.${final.system}.pi-coding-agent;
+      murmure = self.packages.${final.system}.murmure;
     };
   };
 }
