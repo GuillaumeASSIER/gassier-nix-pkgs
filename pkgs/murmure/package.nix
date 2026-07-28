@@ -17,7 +17,6 @@
   xdg-utils,
   nix-update-script,
 }:
-
 stdenv.mkDerivation (finalAttrs: {
   pname = "murmure";
   version = "1.10.1";
@@ -33,20 +32,22 @@ stdenv.mkDerivation (finalAttrs: {
     makeWrapper
   ];
 
-  buildInputs = [
-    webkitgtk_4_1
-    gtk3
-    libayatana-appindicator
-    openssl
-    alsa-lib
-    libxtst
-  ] ++ (with gst_all_1; [
-    gstreamer
-    gst-plugins-base
-    gst-plugins-good
-    gst-plugins-bad
-    gst-plugins-ugly
-  ]);
+  buildInputs =
+    [
+      webkitgtk_4_1
+      gtk3
+      libayatana-appindicator
+      openssl
+      alsa-lib
+      libxtst
+    ]
+    ++ (with gst_all_1; [
+      gstreamer
+      gst-plugins-base
+      gst-plugins-good
+      gst-plugins-bad
+      gst-plugins-ugly
+    ]);
 
   dontConfigure = true;
   dontBuild = true;
@@ -62,26 +63,28 @@ stdenv.mkDerivation (finalAttrs: {
 
   preFixup = ''
     wrapProgram $out/bin/murmure \
-      --prefix PATH : ${lib.makeBinPath [ wl-clipboard xdg-utils ]} \
-      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ libayatana-appindicator gtk-layer-shell ]} \
-      --set GIO_EXTRA_MODULES ${gtk3}/lib/gio/modules
+      --prefix PATH : ${lib.makeBinPath [wl-clipboard xdg-utils]} \
+      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [libayatana-appindicator gtk-layer-shell]} \
+      --set GIO_EXTRA_MODULES ${gtk3}/lib/gio/modules \
+      --set WEBKIT_DISABLE_DMABUF_RENDERER 1 \
+      --set GDK_BACKEND x11
   '';
 
-  passthru.updateScript = nix-update-script { };
+  passthru.updateScript = nix-update-script {};
 
   meta = {
     description = "Privacy-first, open-source speech-to-text running entirely on your machine";
     homepage = "https://github.com/Kieirra/murmure";
     changelog = "https://github.com/Kieirra/murmure/blob/main/CHANGELOG.md";
     license = lib.licenses.agpl3Plus;
-    sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+    sourceProvenance = with lib.sourceTypes; [binaryNativeCode];
     maintainers = [
       {
         name = "Guillaume ASSIER";
         github = "GuillaumeASSIER";
       }
     ];
-    platforms = [ "x86_64-linux" ];
+    platforms = ["x86_64-linux"];
     mainProgram = "murmure";
   };
 })
