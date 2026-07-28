@@ -15,7 +15,7 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "mimo-code";
-  version = "0.1.5";
+  version = "0.1.9";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -24,7 +24,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     owner = "XiaomiMiMo";
     repo = "MiMo-Code";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-fY+j4u1kdp4ZpvrPpw4l5pFmmJ7leTzk1jylZX/hfwQ=";
+    hash = "sha256-8jO8B2W+i913aoDrs1/6iBKUH3TQDHKTrBG0oZ1dN10=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {
@@ -88,7 +88,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     dontFixup = true;
 
-    outputHash = "sha256-1rgHrmPxc1PxFcYOeidlFxTyXofiklqi0ZC1XtdJ2fM=";
+    outputHash = "sha256-xIy9mFjM4cegM0St7hHQTLAfvZa6Q4MSDAbx99ViRKs=";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };
@@ -116,12 +116,12 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   postPatch = ''
     # v0.1.3+: script/index.ts hard-errors if bun < 1.3.14, but nixpkgs-unstable still ships 1.3.13.
     # Strip the version check; the script's runtime behavior is identical on patch versions.
-    # TODO(mimo-code>0.1.5): remove this rewrite once nixpkgs ships bun >= 1.3.14.
+    # TODO(mimo-code>0.1.9): remove this rewrite once nixpkgs ships bun >= 1.3.14.
     sed -i '/^if (!semver.satisfies(process.versions.bun, expectedBunVersionRange)) {$/,/^}$/d' packages/script/src/index.ts
 
     # v0.1.1 bug: code imports ./mimo-free which doesn't exist in the repo (fixed in main).
     # Provide a stub so the bundler resolves the import; functionality is disabled at runtime.
-    # TODO(mimo-code>0.1.5): remove this stub once upstream ships mimo-free.ts in a tagged release.
+    # TODO(mimo-code>0.1.9): remove this stub once upstream ships mimo-free.ts in a tagged release.
     cat > packages/opencode/src/plugin/mimo-free.ts <<'STUB'
     import type { Hooks, PluginInput, Plugin as PluginInstance } from "@mimo-ai/plugin"
 
@@ -139,7 +139,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     # v0.1.1 bug: generate cmd imports prettier which is a root devDep, not in opencode scope.
     # Emit raw JSON instead of going through prettier; the generated spec stays valid JSON.
-    # TODO(mimo-code>0.1.5): remove this rewrite once upstream moves prettier into the opencode workspace.
+    # TODO(mimo-code>0.1.9): remove this rewrite once upstream moves prettier into the opencode workspace.
     cat > packages/opencode/src/cli/cmd/generate.ts <<'GEN'
     import { Server } from "../../server/server"
     import type { CommandModule } from "yargs"
