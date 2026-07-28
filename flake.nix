@@ -25,6 +25,7 @@
       torlink = pkgs.callPackage ./pkgs/torlink {};
       pi-coding-agent = pkgs.callPackage ./pkgs/pi-coding-agent {};
       murmure = pkgs.callPackage ./pkgs/murmure {};
+      opencode = pkgs.callPackage ./pkgs/opencode {};
       ollama = pkgs.callPackage ./pkgs/ollama {};
       default = self.packages.${system}.godap;
     });
@@ -52,6 +53,7 @@
       torlink = self.packages.${final.system}.torlink;
       pi-coding-agent = self.packages.${final.system}.pi-coding-agent;
       murmure = self.packages.${final.system}.murmure;
+      opencode = self.packages.${final.system}.opencode;
       ollama = self.packages.${final.system}.ollama;
     };
   };
