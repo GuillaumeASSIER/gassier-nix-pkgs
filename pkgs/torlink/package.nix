@@ -10,7 +10,7 @@
 
 buildNpmPackage (finalAttrs: {
   pname = "torlink";
-  version = "1.4.0";
+  version = "1.5.1";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -19,11 +19,11 @@ buildNpmPackage (finalAttrs: {
     owner = "baairon";
     repo = "torlink";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-KeszeV9atSvaA9s7iDCl+Q1eDMSx7flnQuBE8t49IPY=";
+    hash = "sha256-dLHuIW2U8hGW1Ko/14/HpxKXwFHWrITfKVLDzLt7U5o=";
   };
 
   nodejs = nodejs_22;
-  npmDepsHash = "sha256-nSHunmjZfr9oCygaLnHQxrXv7wuSa5ze7cQL7BrqfwQ=";
+  npmDepsHash = "sha256-iXEzQv/FQg7APdNE1qwz7R6GXd8SRPrbJR298jtKnlI=";
 
   # ignore-scripts for ip-set broken preinstall
   npmFlags = [ "--ignore-scripts" ];
