@@ -13,7 +13,7 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | murmure | 1.10.1 | [Kieierra/murmure](https://github.com/Kieirra/murmure) |
 | torlink | 1.4.0 | [baairon/torlink](https://github.com/baairon/torlink) |
 | opencode | 0.0.0-next-16302 | [@opencode-ai/cli (next)](https://www.npmjs.com/package/@opencode-ai/cli) |
-| ollama | 0.31.2 | [ollama/ollama](https://github.com/ollama/ollama) |
+| ollama | 0.32.5 | [ollama/ollama](https://github.com/ollama/ollama) |
 
 ## Installation and Usage
 
