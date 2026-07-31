@@ -1,9 +1,13 @@
 # CHANGELOG
 # 2026-07-11: Created based on nixpkgs commit 8c91a71d, bumped to 0.80.6
+# 2026-07-28: Bumped to 0.82.1. pi-ai now generates its model catalog at build
+#             time via a network-bound generate-models.ts; build packages/ai's
+#             dist/ from the matching @earendil-works/pi-ai npm tarball instead.
 {
   lib,
   buildNpmPackage,
   fetchFromGitHub,
+  fetchurl,
   nix-update-script,
   versionCheckHook,
   writableTmpDirAsHomeHook,
@@ -11,19 +15,30 @@
   fd,
   makeBinaryWrapper,
   stdenvNoCC,
-}:
+}: let
+  # Since v0.82, pi-ai no longer commits its model catalog: scripts/generate-models.ts
+  # fetches it live from models.dev / OpenRouter / NVIDIA NIM / Vercel AI Gateway at
+  # build time, which the sandbox can't do. The matching npm tarball (@earendil-works/pi-ai,
+  # same version) ships that catalog already generated in dist/, so we drop its dist/ in
+  # as the packages/ai build output and skip building pi-ai from source entirely.
+  version = "0.82.1";
+  piAiNpm = fetchurl {
+    url = "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-${version}.tgz";
+    hash = "sha256-L535UigItiHNNEmHZTfwPYqN+LjX7C1bGMapEKqFtJA=";
+  };
+in
 buildNpmPackage (finalAttrs: {
   pname = "pi-coding-agent";
-  version = "0.80.6";
+  inherit version;
 
   src = fetchFromGitHub {
     owner = "earendil-works";
     repo = "pi";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-e/wcHruEcBAHDF5tKvwew7LXjVp0eraHh2k+QaL2sCA=";
+    hash = "sha256-LESpgd/KUoNqdBfnd1oyMN8coKm0Odbo9GYkUDry8Zk=";
   };
 
-  npmDepsHash = "sha256-xXEOR0epZcfbXayYGyJdBiFVliamBexqA+1Sd7wlGhU=";
+  npmDepsHash = "sha256-5pHRwxpKg95/phOcYHeWdvPJNtSOhiw7PRoVxsuh0RM=";
 
   npmWorkspace = "packages/coding-agent";
 
@@ -34,14 +49,13 @@ buildNpmPackage (finalAttrs: {
     makeBinaryWrapper
   ];
 
-  # Build workspace dependencies in order, then the coding-agent.
-  # We invoke tsgo directly for workspace deps to skip pi-ai's
-  # generate-models script which requires network access
-  # (models.generated.ts is committed to the repo).
+  # pi-ai's dist/ comes from its npm tarball (see piAiNpm) instead of being built
+  # from source, to avoid the network-bound generate-models step. tui and agent are
+  # still compiled from source; coding-agent is built last.
   buildPhase = ''
     runHook preBuild
 
-    npx tsgo -p packages/ai/tsconfig.build.json
+    tar -xzf ${piAiNpm} -C packages/ai --strip-components=1 package/dist
     npx tsgo -p packages/tui/tsconfig.build.json
     npx tsgo -p packages/agent/tsconfig.build.json
     npm run build --workspace=packages/coding-agent
