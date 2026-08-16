@@ -7,7 +7,7 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | Package | Version | Source |
 | --- | --- | --- |
 | godap | 2.11.1 | [Macmod/godap](https://github.com/Macmod/godap) |
-| mimo-code | 0.1.11 | [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) |
+| mimo-code | 0.1.12 | [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) |
 | oh-my-openagent | 4.19.2 | [code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) |
 | pi-coding-agent | 0.84.1 | [earendil-works/pi](https://github.com/earendil-works/pi) |
 | murmure | 1.10.1 | [Kieierra/murmure](https://github.com/Kieirra/murmure) |
