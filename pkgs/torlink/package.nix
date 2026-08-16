@@ -7,10 +7,9 @@
   wl-clipboard,
   xclip,
 }:
-
 buildNpmPackage (finalAttrs: {
   pname = "torlink";
-  version = "1.5.1";
+  version = "1.6.0";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -19,14 +18,14 @@ buildNpmPackage (finalAttrs: {
     owner = "baairon";
     repo = "torlink";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-dLHuIW2U8hGW1Ko/14/HpxKXwFHWrITfKVLDzLt7U5o=";
+    hash = "sha256-OE2dBGMksDFr5XYtphTda3kQqWXPETYozGXAgkjWmjU=";
   };
 
   nodejs = nodejs_22;
-  npmDepsHash = "sha256-iXEzQv/FQg7APdNE1qwz7R6GXd8SRPrbJR298jtKnlI=";
+  npmDepsHash = "sha256-BobqyavnLyOigfv+Se2LTC+V+O1sjkESNaxZ+QxYFG4=";
 
   # ignore-scripts for ip-set broken preinstall
-  npmFlags = [ "--ignore-scripts" ];
+  npmFlags = ["--ignore-scripts"];
 
   # node-datachannel binary tarball
   nodeDatachannelPrebuilt = fetchurl {
@@ -42,7 +41,7 @@ buildNpmPackage (finalAttrs: {
     tar -xzf ${finalAttrs.nodeDatachannelPrebuilt} \
       -C "$out/lib/node_modules/torlnk/node_modules/node-datachannel"
     wrapProgram "$out/bin/torlnk" \
-      --prefix PATH : ${lib.makeBinPath [ wl-clipboard xclip ]}
+      --prefix PATH : ${lib.makeBinPath [wl-clipboard xclip]}
   '';
 
   meta = {
