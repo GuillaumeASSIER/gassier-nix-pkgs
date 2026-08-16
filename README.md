@@ -9,7 +9,7 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | godap | 2.11.1 | [Macmod/godap](https://github.com/Macmod/godap) |
 | mimo-code | 0.1.12 | [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) |
 | oh-my-openagent | 4.19.4 | [code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) |
-| pi-coding-agent | 0.84.1 | [earendil-works/pi](https://github.com/earendil-works/pi) |
+| pi-coding-agent | 0.84.2 | [earendil-works/pi](https://github.com/earendil-works/pi) |
 | murmure | 1.10.1 | [Kieierra/murmure](https://github.com/Kieirra/murmure) |
 | torlink | 1.5.1 | [baairon/torlink](https://github.com/baairon/torlink) |
 | opencode | 0.0.0-next-17297 | [@opencode-ai/cli (next)](https://www.npmjs.com/package/@opencode-ai/cli) |

@@ -24,114 +24,115 @@
   # build time, which the sandbox can't do. The matching npm tarball (@earendil-works/pi-ai,
   # same version) ships that catalog already generated in dist/, so we drop its dist/ in
   # as the packages/ai build output and skip building pi-ai from source entirely.
-  version = "0.84.1";
+  version = "0.84.2";
   piAiNpm = fetchurl {
     url = "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-${version}.tgz";
-    hash = "sha256-araJGJ58s95c2xJjEqPmDorDX+XuXxtj0A9xHIpDDHM=";
+    hash = "sha256-AmJ4Wnaw6y7sWWzYp6su4j7vidLvG7EhHE8KGUTaz0E=";
   };
 in
-buildNpmPackage (finalAttrs: {
-  pname = "pi-coding-agent";
-  inherit version;
+  buildNpmPackage (finalAttrs: {
+    pname = "pi-coding-agent";
+    inherit version;
 
-  src = fetchFromGitHub {
-    owner = "earendil-works";
-    repo = "pi";
-    tag = "v${finalAttrs.version}";
-    hash = "sha256-lg+I4S/aAjazjhGZU567ow+rksoNiqOqjHl//TjAMes=";
-  };
+    src = fetchFromGitHub {
+      owner = "earendil-works";
+      repo = "pi";
+      tag = "v${finalAttrs.version}";
+      hash = "sha256-d29ft9otYxdHRWYIAX8KMHPpppToX9ME5LbPb1rPcYo=";
+    };
 
-  npmDepsHash = "sha256-tufyZQRPAUeDtiq0UQodbKA/Y9xUAvNT8K+NWFjkeME=";
+    npmDepsHash = "sha256-6J5Efe+6ptCuR3VZojwYPZO8BBnnZsOQ4OAeB64uYOY=";
 
-  npmWorkspace = "packages/coding-agent";
+    npmWorkspace = "packages/coding-agent";
 
-  # Skip native module rebuild for unneeded workspaces (e.g. canvas from web-ui)
-  npmRebuildFlags = [ "--ignore-scripts" ];
+    # Skip native module rebuild for unneeded workspaces (e.g. canvas from web-ui)
+    npmRebuildFlags = ["--ignore-scripts"];
 
-  nativeBuildInputs = [
-    makeBinaryWrapper
-  ];
-
-  # pi-ai's dist/ comes from its npm tarball (see piAiNpm) instead of being built
-  # from source, to avoid the network-bound generate-models step. The remaining
-  # workspaces are compiled from source in dependency order (upstream's
-  # build:binary order): tui/telemetry -> agent, protocol -> client -> coding-agent.
-  buildPhase = ''
-    runHook preBuild
-
-    tar -xzf ${piAiNpm} -C packages/ai --strip-components=1 package/dist
-    npx tsgo -p packages/tui/tsconfig.build.json
-    npx tsgo -p packages/telemetry/tsconfig.build.json
-    npx tsgo -p packages/protocol/tsconfig.build.json
-    npx tsgo -p packages/agent/tsconfig.build.json
-    npx tsgo -p packages/client/tsconfig.build.json
-    npm run build --workspace=packages/coding-agent
-
-    runHook postBuild
-  '';
-
-  # npm workspace symlinks in the output point into packages/ which
-  # doesn't exist there. Replace runtime deps with built content and
-  # delete the rest.
-  postInstall = ''
-    local nm="$out/lib/node_modules/pi-monorepo/node_modules"
-
-    # Replace workspace deps needed at runtime with real copies
-    for ws in @earendil-works/pi-ai:packages/ai \
-              @earendil-works/pi-agent-core:packages/agent \
-              @earendil-works/pi-telemetry:packages/telemetry \
-              @earendil-works/pi-protocol:packages/protocol \
-              @earendil-works/pi-client:packages/client \
-              @earendil-works/pi-tui:packages/tui; do
-      IFS=: read -r pkg src <<< "$ws"
-      rm "$nm/$pkg"
-      cp -r "$src" "$nm/$pkg"
-    done
-
-    # Delete remaining workspace symlinks
-    find "$nm" -type l -lname '*/packages/*' -delete
-
-    # Clean up now-dangling .bin symlinks
-    find "$nm/.bin" -xtype l -delete
-  ''
-  + lib.optionalString stdenvNoCC.hostPlatform.isDarwin ''
-    # Remove foreign Linux binaries that make audit-tmpdir try to inspect ELF
-    # RPATHs with patchelf
-    rm -rf \
-      "$nm/@anthropic-ai/sandbox-runtime/dist/vendor/seccomp" \
-      "$nm/@anthropic-ai/sandbox-runtime/vendor/seccomp"
-  '';
-
-  postFixup = "wrapProgram $out/bin/pi --prefix PATH : ${
-    lib.makeBinPath [
-      ripgrep
-      fd
-    ]
-  }";
-
-  doInstallCheck = true;
-  nativeInstallCheckInputs = [
-    writableTmpDirAsHomeHook
-    versionCheckHook
-  ];
-  versionCheckKeepEnvironment = [ "HOME" ];
-  versionCheckProgram = "${placeholder "out"}/bin/pi";
-  versionCheckProgramArg = "--version";
-
-  passthru.updateScript = nix-update-script { };
-
-  meta = {
-    description = "Coding agent CLI with read, bash, edit, write tools and session management";
-    homepage = "https://pi.dev/";
-    downloadPage = "https://www.npmjs.com/package/@earendil-works/pi-coding-agent";
-    changelog = "https://github.com/earendil-works/pi/blob/main/packages/coding-agent/CHANGELOG.md";
-    license = lib.licenses.mit;
-    maintainers = [
-      {
-        name = "Guillaume ASSIER";
-        github = "GuillaumeASSIER";
-      }
+    nativeBuildInputs = [
+      makeBinaryWrapper
     ];
-    mainProgram = "pi";
-  };
-})
+
+    # pi-ai's dist/ comes from its npm tarball (see piAiNpm) instead of being built
+    # from source, to avoid the network-bound generate-models step. The remaining
+    # workspaces are compiled from source in dependency order (upstream's
+    # build:binary order): tui/telemetry -> agent, protocol -> client -> coding-agent.
+    buildPhase = ''
+      runHook preBuild
+
+      tar -xzf ${piAiNpm} -C packages/ai --strip-components=1 package/dist
+      npx tsgo -p packages/tui/tsconfig.build.json
+      npx tsgo -p packages/telemetry/tsconfig.build.json
+      npx tsgo -p packages/protocol/tsconfig.build.json
+      npx tsgo -p packages/agent/tsconfig.build.json
+      npx tsgo -p packages/client/tsconfig.build.json
+      npm run build --workspace=packages/coding-agent
+
+      runHook postBuild
+    '';
+
+    # npm workspace symlinks in the output point into packages/ which
+    # doesn't exist there. Replace runtime deps with built content and
+    # delete the rest.
+    postInstall =
+      ''
+        local nm="$out/lib/node_modules/pi-monorepo/node_modules"
+
+        # Replace workspace deps needed at runtime with real copies
+        for ws in @earendil-works/pi-ai:packages/ai \
+                  @earendil-works/pi-agent-core:packages/agent \
+                  @earendil-works/pi-telemetry:packages/telemetry \
+                  @earendil-works/pi-protocol:packages/protocol \
+                  @earendil-works/pi-client:packages/client \
+                  @earendil-works/pi-tui:packages/tui; do
+          IFS=: read -r pkg src <<< "$ws"
+          rm "$nm/$pkg"
+          cp -r "$src" "$nm/$pkg"
+        done
+
+        # Delete remaining workspace symlinks
+        find "$nm" -type l -lname '*/packages/*' -delete
+
+        # Clean up now-dangling .bin symlinks
+        find "$nm/.bin" -xtype l -delete
+      ''
+      + lib.optionalString stdenvNoCC.hostPlatform.isDarwin ''
+        # Remove foreign Linux binaries that make audit-tmpdir try to inspect ELF
+        # RPATHs with patchelf
+        rm -rf \
+          "$nm/@anthropic-ai/sandbox-runtime/dist/vendor/seccomp" \
+          "$nm/@anthropic-ai/sandbox-runtime/vendor/seccomp"
+      '';
+
+    postFixup = "wrapProgram $out/bin/pi --prefix PATH : ${
+      lib.makeBinPath [
+        ripgrep
+        fd
+      ]
+    }";
+
+    doInstallCheck = true;
+    nativeInstallCheckInputs = [
+      writableTmpDirAsHomeHook
+      versionCheckHook
+    ];
+    versionCheckKeepEnvironment = ["HOME"];
+    versionCheckProgram = "${placeholder "out"}/bin/pi";
+    versionCheckProgramArg = "--version";
+
+    passthru.updateScript = nix-update-script {};
+
+    meta = {
+      description = "Coding agent CLI with read, bash, edit, write tools and session management";
+      homepage = "https://pi.dev/";
+      downloadPage = "https://www.npmjs.com/package/@earendil-works/pi-coding-agent";
+      changelog = "https://github.com/earendil-works/pi/blob/main/packages/coding-agent/CHANGELOG.md";
+      license = lib.licenses.mit;
+      maintainers = [
+        {
+          name = "Guillaume ASSIER";
+          github = "GuillaumeASSIER";
+        }
+      ];
+      mainProgram = "pi";
+    };
+  })
