@@ -15,6 +15,7 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | opencode | 0.0.0-next-17297 | [@opencode-ai/cli (next)](https://www.npmjs.com/package/@opencode-ai/cli) |
 | ollama | 0.32.5 | [ollama/ollama](https://github.com/ollama/ollama) |
 | stoat-desktop | 1.4.2 | [stoatchat/for-desktop](https://github.com/stoatchat/for-desktop) |
+| deepseek-harness | 0.1.0-rc.5 | [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) |
 
 ## Installation and Usage
 

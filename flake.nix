@@ -28,6 +28,7 @@
       opencode = pkgs.callPackage ./pkgs/opencode {};
       ollama = pkgs.callPackage ./pkgs/ollama {};
       stoat-desktop = pkgs.callPackage ./pkgs/stoat-desktop {};
+      deepseek-harness = pkgs.callPackage ./pkgs/deepseek-harness {};
       default = self.packages.${system}.godap;
     });
 
@@ -57,6 +58,7 @@
       opencode = self.packages.${final.system}.opencode;
       ollama = self.packages.${final.system}.ollama;
       stoat-desktop = self.packages.${final.system}.stoat-desktop;
+      deepseek-harness = self.packages.${final.system}.deepseek-harness;
     };
   };
 }
