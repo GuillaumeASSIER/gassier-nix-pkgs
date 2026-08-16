@@ -12,7 +12,7 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | pi-coding-agent | 0.84.2 | [earendil-works/pi](https://github.com/earendil-works/pi) |
 | murmure | 1.10.1 | [Kieierra/murmure](https://github.com/Kieirra/murmure) |
 | torlink | 1.6.0 | [baairon/torlink](https://github.com/baairon/torlink) |
-| opencode | 0.0.0-next-17297 | [@opencode-ai/cli (next)](https://www.npmjs.com/package/@opencode-ai/cli) |
+| opencode | 0.0.0-next-17444 | [@opencode-ai/cli (next)](https://www.npmjs.com/package/@opencode-ai/cli) |
 | ollama | 0.32.13 | [ollama/ollama](https://github.com/ollama/ollama) |
 | stoat-desktop | 1.4.2 | [stoatchat/for-desktop](https://github.com/stoatchat/for-desktop) |
 | deepseek-harness | 0.1.0-rc.5 | [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) |
