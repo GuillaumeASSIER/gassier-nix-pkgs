@@ -27,6 +27,7 @@
       murmure = pkgs.callPackage ./pkgs/murmure {};
       opencode = pkgs.callPackage ./pkgs/opencode {};
       ollama = pkgs.callPackage ./pkgs/ollama {};
+      stoat-desktop = pkgs.callPackage ./pkgs/stoat-desktop {};
       default = self.packages.${system}.godap;
     });
 
@@ -55,6 +56,7 @@
       murmure = self.packages.${final.system}.murmure;
       opencode = self.packages.${final.system}.opencode;
       ollama = self.packages.${final.system}.ollama;
+      stoat-desktop = self.packages.${final.system}.stoat-desktop;
     };
   };
 }

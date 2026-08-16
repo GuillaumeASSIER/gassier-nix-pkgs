@@ -14,6 +14,7 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | torlink | 1.5.1 | [baairon/torlink](https://github.com/baairon/torlink) |
 | opencode | 0.0.0-next-17297 | [@opencode-ai/cli (next)](https://www.npmjs.com/package/@opencode-ai/cli) |
 | ollama | 0.32.5 | [ollama/ollama](https://github.com/ollama/ollama) |
+| stoat-desktop | 1.4.2 | [stoatchat/for-desktop](https://github.com/stoatchat/for-desktop) |
 
 ## Installation and Usage
 
