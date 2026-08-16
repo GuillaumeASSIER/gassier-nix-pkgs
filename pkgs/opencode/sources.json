@@ -1,21 +1,21 @@
 {
-  "version": "0.0.0-next-17444",
+  "version": "1.18.18",
   "platforms": {
     "x86_64-linux": {
-      "npm": "linux-x64",
-      "hash": "sha256-54iGtij74Sck19YItCjrww8PHPhBPrMbHt2d4FZzms8="
+      "asset": "opencode-linux-x64.tar.gz",
+      "hash": "sha256-DN3CIkGLhVNmmQWomAwM2nCI8A2iTYPWrHawHJ/bKq8="
     },
     "aarch64-linux": {
-      "npm": "linux-arm64",
-      "hash": "sha256-u9m94vtXFmSu5bKcZ3HdbRD9Xlmo7bXtJ3N/8vVSviU="
+      "asset": "opencode-linux-arm64.tar.gz",
+      "hash": "sha256-3LG17FaHtD+HdJVgAh+SA/OAngzlrkT/m+iuFwg/5Lo="
     },
     "x86_64-darwin": {
-      "npm": "darwin-x64",
-      "hash": "sha256-BdzXsFUYenrC3GcQkKn5DqrY7pM9ve7WaEPaImp8pOk="
+      "asset": "opencode-darwin-x64.zip",
+      "hash": "sha256-lYG9doOnUoRWF5+xHjN32e9WjhCpNWEaLGci40lFTYM="
     },
     "aarch64-darwin": {
-      "npm": "darwin-arm64",
-      "hash": "sha256-kJEZ6dwUayg4qfbGPB1kBX03hqLMpjh/saHcodMRYzs="
+      "asset": "opencode-darwin-arm64.zip",
+      "hash": "sha256-fWaL8mSW/shobU5R67GsK9Ljk/DBYgqmlsTCQqnlgGo="
     }
   }
 }
