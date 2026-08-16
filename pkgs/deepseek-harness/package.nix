@@ -9,8 +9,8 @@
   node-gyp,
   python3,
   makeBinaryWrapper,
+  versionCheckHook,
   git,
-  nix-update-script,
 }: let
   pnpm = pnpm_11;
 in
@@ -18,7 +18,7 @@ in
     pname = "deepseek-harness";
     version = "0.1.0-rc.5";
 
-    # Upstream publishes no git tags; pin the master commit the version was read from.
+    # Upstream publishes no git tags; pin the master commit this version was read from.
     src = fetchFromGitHub {
       owner = "deepseek-ai";
       repo = "deepseek-harness";
@@ -59,8 +59,7 @@ in
         echo "deepseek-harness: node-pty not found in the pnpm store" >&2
         exit 1
       fi
-      NPTY_DIR="$NPTY_PKG/node_modules/node-pty"
-      pushd "$NPTY_DIR"
+      pushd "$NPTY_PKG/node_modules/node-pty"
       node-gyp rebuild
       popd
 
@@ -77,19 +76,26 @@ in
       mkdir -p $out/libexec/dsh $out/bin
 
       # Ship the whole workspace: built libs, apps/web/dist, config, and the
-      # pnpm node_modules tree (workspace symlinks are relative and survive the copy).
+      # pnpm node_modules tree (workspace symlinks are relative and survive the
+      # copy). Build-time artifacts are dropped to keep the output lean.
+      rm -f tsconfig.host.tsbuildinfo tsconfig.client.tsbuildinfo
       cp -r --no-preserve=mode . $out/libexec/dsh/
 
+      # --expose-internals lets the loader resolve bare plugin specifiers through
+      # Node's internal module loader (see mountRootInclude in dsh-app-boot).
       makeWrapper ${nodejs}/bin/node $out/bin/dsh \
-        --add-flags "$out/libexec/dsh/apps/cli/lib/bin.js" \
+        --add-flags "--expose-internals $out/libexec/dsh/apps/cli/lib/bin.js" \
         --prefix PATH : ${lib.makeBinPath [git]}
 
       runHook postInstall
     '';
 
-    passthru = {
-      updateScript = nix-update-script {};
-    };
+    doInstallCheck = true;
+    nativeInstallCheckInputs = [
+      versionCheckHook
+    ];
+    versionCheckProgram = "${placeholder "out"}/bin/dsh";
+    versionCheckProgramArg = "--version";
 
     meta = {
       description = "DeepSeek Harness (dsh) - open-source agent harness where everything is a plugin";
