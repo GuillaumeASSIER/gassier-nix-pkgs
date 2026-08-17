@@ -16,6 +16,7 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | ollama | 0.32.13 | [ollama/ollama](https://github.com/ollama/ollama) |
 | stoat-desktop | 1.4.2 | [stoatchat/for-desktop](https://github.com/stoatchat/for-desktop) |
 | deepseek-harness | 0.1.0-rc.5 | [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) |
+| oh-my-pi | 17.3.5 | [can1357/oh-my-pi (releases)](https://github.com/can1357/oh-my-pi/releases) |
 
 ## Installation and Usage
 
@@ -129,10 +130,15 @@ To add a new package:
 │   ├── godap/
 │   │   ├── default.nix    # Package entry point
 │   │   └── package.nix    # Package definition
-│   └── mimo-code/
+│   ├── mimo-code/
+│   │   ├── default.nix    # Package entry point
+│   │   ├── package.nix    # Package definition
+│   │   └── scripts/       # Upstream helper scripts (node_modules canonicalization)
+│   └── oh-my-pi/
 │       ├── default.nix    # Package entry point
-│       ├── package.nix    # Package definition
-│       └── scripts/       # Upstream helper scripts (node_modules canonicalization)
+│       ├── package.nix    # Package definition (prebuilt release binary)
+│       ├── sources.json   # Version + per-platform asset hashes
+│       └── update.py      # Regenerates sources.json from the latest release
 ├── README.md
 ├── LICENSE
 └── .gitignore

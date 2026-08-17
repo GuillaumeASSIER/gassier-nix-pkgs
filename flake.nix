@@ -29,6 +29,7 @@
       ollama = pkgs.callPackage ./pkgs/ollama {};
       stoat-desktop = pkgs.callPackage ./pkgs/stoat-desktop {};
       deepseek-harness = pkgs.callPackage ./pkgs/deepseek-harness {};
+      oh-my-pi = pkgs.callPackage ./pkgs/oh-my-pi {};
       default = self.packages.${system}.godap;
     });
 
@@ -59,6 +60,7 @@
       ollama = self.packages.${final.system}.ollama;
       stoat-desktop = self.packages.${final.system}.stoat-desktop;
       deepseek-harness = self.packages.${final.system}.deepseek-harness;
+      oh-my-pi = self.packages.${final.system}.oh-my-pi;
     };
   };
 }
