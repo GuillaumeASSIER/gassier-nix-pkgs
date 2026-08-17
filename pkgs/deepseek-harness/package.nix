@@ -83,9 +83,12 @@ in
 
       # --expose-internals lets the loader resolve bare plugin specifiers through
       # Node's internal module loader (see mountRootInclude in dsh-app-boot).
+      # git: plugin specs may come from git-hosted URLs; pnpm: `dsh plugin`
+      # (the documented way to create a profile) forwards to pnpm, which must
+      # resolve from PATH even when not installed globally.
       makeWrapper ${nodejs}/bin/node $out/bin/dsh \
         --add-flags "--expose-internals $out/libexec/dsh/apps/cli/lib/bin.js" \
-        --prefix PATH : ${lib.makeBinPath [git]}
+        --prefix PATH : ${lib.makeBinPath [git pnpm]}
 
       runHook postInstall
     '';
