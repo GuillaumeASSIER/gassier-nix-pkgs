@@ -30,6 +30,7 @@
       stoat-desktop = pkgs.callPackage ./pkgs/stoat-desktop {};
       deepseek-harness = pkgs.callPackage ./pkgs/deepseek-harness {};
       oh-my-pi = pkgs.callPackage ./pkgs/oh-my-pi {};
+      mtplvcap = pkgs.callPackage ./pkgs/mtplvcap {};
       default = self.packages.${system}.godap;
     });
 
@@ -61,6 +62,7 @@
       stoat-desktop = self.packages.${final.system}.stoat-desktop;
       deepseek-harness = self.packages.${final.system}.deepseek-harness;
       oh-my-pi = self.packages.${final.system}.oh-my-pi;
+      mtplvcap = self.packages.${final.system}.mtplvcap;
     };
   };
 }
