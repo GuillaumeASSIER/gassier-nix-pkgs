@@ -41,6 +41,7 @@
   nspr,
   nss,
   pango,
+  pipewire,
   systemd,
   libxdamage,
   libxext,
@@ -50,26 +51,26 @@
   libx11,
   libxcomposite,
 }: let
-  version = "1.4.2";
+  version = "1.5.4";
 
   # Per-platform release zips. Hashes are sha256 of the GitHub release assets
   # (cross-checked against the API digests).
   sources = {
     x86_64-linux = {
       asset = "Stoat-linux-x64-${version}.zip";
-      hash = "sha256-o4DdE3YH/w6uOp6rbnW0tPwLBM057wK8Uf+MME6Z56k=";
+      hash = "sha256-KKCCif05ZWj2mvR9d8JqU4QZJYuqgPwDd1ZpRlmy9xo=";
     };
     aarch64-linux = {
       asset = "Stoat-linux-arm64-${version}.zip";
-      hash = "sha256-lpeCN9og6ybyEaZu2BmSM35NSctElFfN5RNMh8LLsNc=";
+      hash = "sha256-6jzix1yOnM4N88OtZw/YE681jfpHaRbp8JQY5Vw1kNg=";
     };
     x86_64-darwin = {
       asset = "Stoat-darwin-x64-${version}.zip";
-      hash = "sha256-YsvjByKbfCDI0rVTTtKXK8eI70SnCFWkMRwxB1hB43U=";
+      hash = "sha256-qOqewy/UeIG0207Pvj2sC7xkttufHoW4fPV6FXWuEck=";
     };
     aarch64-darwin = {
       asset = "Stoat-darwin-arm64-${version}.zip";
-      hash = "sha256-XYT5CpcKDlME9sCg8GqJJZDY8tNcjlfsqX40LrwRsfc=";
+      hash = "sha256-mTlcYHrKs6YYNMy7+HTy4F5K1Kd4J0f5hzdtFBRen78=";
     };
   };
   current = sources.${stdenv.hostPlatform.system};
@@ -112,6 +113,7 @@ in
       gtk3
       libxkbcommon
       (lib.getLib mesa)
+      pipewire
       nspr
       nss
       pango

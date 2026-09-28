@@ -19,11 +19,11 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "murmure";
-  version = "1.10.1";
+  version = "1.11.3";
 
   src = fetchurl {
     url = "https://github.com/Kieirra/murmure/releases/download/${finalAttrs.version}/Murmure_amd64.deb";
-    hash = "sha256-BJ8htdMKee/99D/U8vayC1p6XyecFtsQu6/Z43pInPY=";
+    hash = "sha256-FezGyz+F8gO995RtxuBqUHDCNletPXjchLfE5R/HpzE=";
   };
 
   nativeBuildInputs = [

@@ -6,6 +6,9 @@
 # 2026-08-12: Bumped to 0.84.1. New workspaces telemetry (dep of agent), protocol
 #             and client (deps of coding-agent) are compiled from source and copied
 #             into node_modules alongside ai/agent/tui.
+# 2026-09-28: Bumped to 0.87.1. New chord workspace (dep of protocol, agent,
+#             client, coding-agent) is compiled from source and copied into
+#             node_modules alongside ai/agent/tui.
 {
   lib,
   buildNpmPackage,
@@ -24,10 +27,10 @@
   # build time, which the sandbox can't do. The matching npm tarball (@earendil-works/pi-ai,
   # same version) ships that catalog already generated in dist/, so we drop its dist/ in
   # as the packages/ai build output and skip building pi-ai from source entirely.
-  version = "0.84.2";
+  version = "0.87.1";
   piAiNpm = fetchurl {
     url = "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-${version}.tgz";
-    hash = "sha256-AmJ4Wnaw6y7sWWzYp6su4j7vidLvG7EhHE8KGUTaz0E=";
+    hash = "sha256-NbRDLyfMJmX4a+67mvajmxJRlwiDwwRL2L5PToxzHKA=";
   };
 in
   buildNpmPackage (finalAttrs: {
@@ -38,10 +41,10 @@ in
       owner = "earendil-works";
       repo = "pi";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-d29ft9otYxdHRWYIAX8KMHPpppToX9ME5LbPb1rPcYo=";
+      hash = "sha256-GUhlq6t+l6iiViOZ0bkV28v3ZDqcLvEwpZpYZ5JAyDk=";
     };
 
-    npmDepsHash = "sha256-6J5Efe+6ptCuR3VZojwYPZO8BBnnZsOQ4OAeB64uYOY=";
+    npmDepsHash = "sha256-JBIYoP2vvRNz1HONNvDJ1U3c+nmCJ7/VgNthRTkrkIA=";
 
     npmWorkspace = "packages/coding-agent";
 
@@ -54,12 +57,14 @@ in
 
     # pi-ai's dist/ comes from its npm tarball (see piAiNpm) instead of being built
     # from source, to avoid the network-bound generate-models step. The remaining
-    # workspaces are compiled from source in dependency order (upstream's
-    # build:binary order): tui/telemetry -> agent, protocol -> client -> coding-agent.
+    # workspaces are compiled from source in dependency order: chord, then
+    # tui/telemetry -> agent, protocol -> client -> coding-agent (protocol and
+    # client both consume chord's types).
     buildPhase = ''
       runHook preBuild
 
       tar -xzf ${piAiNpm} -C packages/ai --strip-components=1 package/dist
+      npx tsgo -p packages/chord/tsconfig.build.json
       npx tsgo -p packages/tui/tsconfig.build.json
       npx tsgo -p packages/telemetry/tsconfig.build.json
       npx tsgo -p packages/protocol/tsconfig.build.json
@@ -83,7 +88,8 @@ in
                   @earendil-works/pi-telemetry:packages/telemetry \
                   @earendil-works/pi-protocol:packages/protocol \
                   @earendil-works/pi-client:packages/client \
-                  @earendil-works/pi-tui:packages/tui; do
+                  @earendil-works/pi-tui:packages/tui \
+                  @earendil-works/chord:packages/chord; do
           IFS=: read -r pkg src <<< "$ws"
           rm "$nm/$pkg"
           cp -r "$src" "$nm/$pkg"

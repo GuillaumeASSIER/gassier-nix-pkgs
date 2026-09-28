@@ -18,22 +18,22 @@
   llamaCppSrc = fetchFromGitHub {
     owner = "ggml-org";
     repo = "llama.cpp";
-    tag = "b10380";
-    hash = "sha256-HT0QuIFJz5cgH2qinxhtyLEL/RrUpziZuntj/EDQtzI=";
+    tag = "b11081";
+    hash = "sha256-yI/oNTMzOO9Cu0xVp0YYbbgvlwTggJAPJMooDfVnMvU=";
   };
 in
   buildGoModule (finalAttrs: {
     pname = "ollama";
-    version = "0.32.13";
+    version = "0.34.4";
 
     src = fetchFromGitHub {
       owner = "ollama";
       repo = "ollama";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-KSvw7LsvpUVeSm9BKJ4wIp/fWGHjMp8bOTMUpFJCDmw=";
+      hash = "sha256-Wg1lVSJjN67TSIX75Xp/QyiuCW+HirpdJZIm92J0j6o=";
     };
 
-    vendorHash = "sha256-HMwoaFBMbpoy8f0I+O+i7kIa9BslLu3FcVWeaIOkpvs=";
+    vendorHash = "sha256-45FfI47tNHBPYOBLRrwuhADCUtkjAhlFrExlEy9piMI=";
     proxyVendor = true;
 
     nativeBuildInputs = [
@@ -55,15 +55,17 @@ in
       rm -r app
 
       # Pre-stage llama.cpp for the FetchContent step and apply Ollama's compat
-      # patch. When FETCHCONTENT_SOURCE_DIR_LLAMA_CPP is set, neither
-      # `cmake/local.cmake` nor `llama/server/CMakeLists.txt` auto-applies the
-      # patch (the parent passes OLLAMA_LLAMA_CPP_SKIP_COMPAT_PATCH=ON) — the
-      # caller has to. apply-patch.cmake is idempotent so this is safe to re-run.
+      # patch. The parent passes OLLAMA_LLAMA_CPP_SKIP_COMPAT_PATCH=ON to the
+      # llama/server sub-build, so it assumes the source is already prepared —
+      # the caller has to apply the patch. The applier is idempotent (it skips
+      # patches that `git apply --reverse --check` reports as already applied),
+      # so this is safe to re-run.
       cp -r ${llamaCppSrc} $TMPDIR/llama-cpp-src
       chmod -R +w $TMPDIR/llama-cpp-src
       ( cd $TMPDIR/llama-cpp-src && \
         cmake -DPATCH_DIR=$NIX_BUILD_TOP/source/llama/compat \
-          -P $NIX_BUILD_TOP/source/llama/compat/apply-patch.cmake )
+          -DPATCH_LABEL=llama/compat \
+          -P $NIX_BUILD_TOP/source/cmake/apply-git-patches.cmake )
     '';
 
     overrideModAttrs = _: _: {

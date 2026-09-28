@@ -15,7 +15,7 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "mimo-code";
-  version = "0.1.12";
+  version = "0.1.15";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -24,7 +24,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     owner = "XiaomiMiMo";
     repo = "MiMo-Code";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-C0DaOyoaBrOMxr/xthBmMWDU99ejgdJGWfYLEePPfK4=";
+    hash = "sha256-TNtRSn4G5s8JyXHjv/pyxlwMYIF89fhCdyDEyXHtLfY=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {
@@ -88,7 +88,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     dontFixup = true;
 
-    outputHash = "sha256-dBLoL1/lHqKQ683BTjc3Hyl/rspo1k+zIHQW3aNn9y8=";
+    outputHash = "sha256-KlNRIWDg0TohBxqmK1LXQQPIME8A1QbYUtThrnEwd+M=";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };
@@ -114,10 +114,13 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   '';
 
   postPatch = ''
-    # v0.1.3+: script/index.ts hard-errors if bun < 1.3.14, but nixpkgs-unstable still ships 1.3.13.
-    # Strip the version check; the script's runtime behavior is identical on patch versions.
-    # TODO(mimo-code>0.1.9): remove this rewrite once nixpkgs ships bun >= 1.3.14.
+    # Both build scripts refuse to run on a bun other than the one pinned in
+    # package.json's `packageManager` field. packages/script/src/index.ts does a
+    # `^`-range check, packages/opencode/script/build.ts a strict equality one;
+    # nixpkgs' bun is newer than the pin, so strip both guards. The built output
+    # is a bun-compiled binary and behavior does not depend on the patch level.
     sed -i '/^if (!semver.satisfies(process.versions.bun, expectedBunVersionRange)) {$/,/^}$/d' packages/script/src/index.ts
+    sed -i '/^if (pinned && Bun.version !== pinned) {$/,/^}$/d' packages/opencode/script/build.ts
 
     # v0.1.1 bug: code imports ./mimo-free which doesn't exist in the repo (fixed in main).
     # Provide a stub so the bundler resolves the import; functionality is disabled at runtime.

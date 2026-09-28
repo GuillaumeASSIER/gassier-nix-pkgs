@@ -6,20 +6,20 @@
 }:
 buildGoModule rec {
   pname = "godap";
-  version = "2.11.1";
+  version = "2.12.2";
 
   src = fetchFromGitHub {
     owner = "Macmod";
     repo = "godap";
     rev = "v${version}";
-    hash = "sha256-004j01OcFz8MgWBp3r+ejBJuR6hjy9U9S0b6A6GRS5U=";
+    hash = "sha256-8Xlf9VL1rJ7PMk8dRia0bmYkx1gCstnp/Sv9FO1BxSw=";
   };
 
   # To generate vendorHash:
   # 1. Set vendorHash to lib.fakeHash
   # 2. Build the derivation: nix build .#godap
   # 3. Copy the actual hash from the error message and replace lib.fakeHash
-  vendorHash = "sha256-D5Eq2JFIEmxO/FBGON+nKtGktWPOzXfv8l5akRTpz7Q=";
+  vendorHash = "sha256-wqBpsZdfU9xOGKbspWYq8A6xmCrIQrKFhx4s7M6K6/M=";
 
   ldflags = [
     "-s"

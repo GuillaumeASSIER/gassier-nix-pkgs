@@ -6,17 +6,17 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 
 | Package | Version | Source |
 | --- | --- | --- |
-| godap | 2.11.1 | [Macmod/godap](https://github.com/Macmod/godap) |
-| mimo-code | 0.1.12 | [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) |
-| oh-my-openagent | 4.19.4 | [code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) |
-| pi-coding-agent | 0.84.2 | [earendil-works/pi](https://github.com/earendil-works/pi) |
-| murmure | 1.10.1 | [Kieierra/murmure](https://github.com/Kieirra/murmure) |
-| torlink | 1.6.0 | [baairon/torlink](https://github.com/baairon/torlink) |
-| opencode | 1.18.18 | [anomalyco/opencode (releases)](https://github.com/anomalyco/opencode/releases) |
-| ollama | 0.32.13 | [ollama/ollama](https://github.com/ollama/ollama) |
-| stoat-desktop | 1.4.2 | [stoatchat/for-desktop](https://github.com/stoatchat/for-desktop) |
-| deepseek-harness | 0.1.0-rc.5 | [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) |
-| oh-my-pi | 17.3.5 | [can1357/oh-my-pi (releases)](https://github.com/can1357/oh-my-pi/releases) |
+| godap | 2.12.2 | [Macmod/godap](https://github.com/Macmod/godap) |
+| mimo-code | 0.1.15 | [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) |
+| oh-my-openagent | 5.0.1 | [code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) |
+| pi-coding-agent | 0.87.1 | [earendil-works/pi](https://github.com/earendil-works/pi) |
+| murmure | 1.11.3 | [Kieierra/murmure](https://github.com/Kieirra/murmure) |
+| torlink | 1.9.0 | [baairon/torlink](https://github.com/baairon/torlink) |
+| opencode | 1.18.33 | [anomalyco/opencode (releases)](https://github.com/anomalyco/opencode/releases) |
+| ollama | 0.34.4 | [ollama/ollama](https://github.com/ollama/ollama) |
+| stoat-desktop | 1.5.4 | [stoatchat/for-desktop](https://github.com/stoatchat/for-desktop) |
+| deepseek-harness | 0.1.7-rc.2 | [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) |
+| oh-my-pi | 18.4.1 | [can1357/oh-my-pi (releases)](https://github.com/can1357/oh-my-pi/releases) |
 | mtplvcap | 1.6.2 | [puhitaku/mtplvcap](https://github.com/puhitaku/mtplvcap) |
 | higgsfield | 1.1.26 | [higgsfield-ai/cli](https://github.com/higgsfield-ai/cli) |
 

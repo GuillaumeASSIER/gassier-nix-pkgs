@@ -54,9 +54,7 @@ nix-update --flake godap 2.11.1
 nix-update --flake --commit --version=unstable godap
 ```
 
-Works for all packages with a `passthru.updateScript` (godap, mimo-code, oh-my-openagent, pi-coding-agent).
-
-> **torlink** has no `updateScript` yet — use Method 2 for it, or add `passthru.updateScript = nix-update-script {};` first.
+Works for all packages with a `passthru.updateScript` (godap, mimo-code, mtplvcap, murmure, oh-my-openagent, pi-coding-agent, stoat-desktop, torlink).
 
 ### Method 2 — Manual `lib.fakeHash` (fallback)
 

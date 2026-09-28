@@ -6,10 +6,11 @@
   nodejs_22,
   wl-clipboard,
   xclip,
+  nix-update-script,
 }:
 buildNpmPackage (finalAttrs: {
   pname = "torlink";
-  version = "1.6.0";
+  version = "1.9.0";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -18,11 +19,11 @@ buildNpmPackage (finalAttrs: {
     owner = "baairon";
     repo = "torlink";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-OE2dBGMksDFr5XYtphTda3kQqWXPETYozGXAgkjWmjU=";
+    hash = "sha256-DE4ZlIF1nHn2btHpT+X4BlhnW35OgDMWDbCVruMYN5s=";
   };
 
   nodejs = nodejs_22;
-  npmDepsHash = "sha256-BobqyavnLyOigfv+Se2LTC+V+O1sjkESNaxZ+QxYFG4=";
+  npmDepsHash = "sha256-VWa4IQLNRxZWjHJfW2c/BFkfaG4Hvtb+n1A2R24G8cc=";
 
   # ignore-scripts for ip-set broken preinstall
   npmFlags = ["--ignore-scripts"];
@@ -43,6 +44,7 @@ buildNpmPackage (finalAttrs: {
     wrapProgram "$out/bin/torlnk" \
       --prefix PATH : ${lib.makeBinPath [wl-clipboard xclip]}
   '';
+  passthru.updateScript = nix-update-script {};
 
   meta = {
     description = "A sleek, zero-setup torrent finder and downloader that lives right in your terminal.";

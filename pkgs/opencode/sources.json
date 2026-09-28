@@ -1,21 +1,21 @@
 {
-  "version": "1.18.18",
+  "version": "1.18.33",
   "platforms": {
     "x86_64-linux": {
       "asset": "opencode-linux-x64.tar.gz",
-      "hash": "sha256-DN3CIkGLhVNmmQWomAwM2nCI8A2iTYPWrHawHJ/bKq8="
+      "hash": "sha256-5UYSMhOuR5CaQmhpKqS5SVDQEa/pysmTh1OiGU8cFtU="
     },
     "aarch64-linux": {
       "asset": "opencode-linux-arm64.tar.gz",
-      "hash": "sha256-3LG17FaHtD+HdJVgAh+SA/OAngzlrkT/m+iuFwg/5Lo="
+      "hash": "sha256-xjSGYkYhkkv0O+XAGr0lKIVmGnNIFCJPbXAYijOuqFg="
     },
     "x86_64-darwin": {
       "asset": "opencode-darwin-x64.zip",
-      "hash": "sha256-lYG9doOnUoRWF5+xHjN32e9WjhCpNWEaLGci40lFTYM="
+      "hash": "sha256-kMfn2f+g2GkcoPFbQqe4m3Lhek0mB0ue8GVZ/4eyIew="
     },
     "aarch64-darwin": {
       "asset": "opencode-darwin-arm64.zip",
-      "hash": "sha256-fWaL8mSW/shobU5R67GsK9Ljk/DBYgqmlsTCQqnlgGo="
+      "hash": "sha256-JLEoc+YFs9szh8s1X0O6dFHNYGXBgNjBiGYzN9LutVM="
     }
   }
 }
