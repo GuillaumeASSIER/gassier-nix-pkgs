@@ -18,6 +18,7 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | deepseek-harness | 0.1.0-rc.5 | [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) |
 | oh-my-pi | 17.3.5 | [can1357/oh-my-pi (releases)](https://github.com/can1357/oh-my-pi/releases) |
 | mtplvcap | 1.6.2 | [puhitaku/mtplvcap](https://github.com/puhitaku/mtplvcap) |
+| higgsfield | 1.1.26 | [higgsfield-ai/cli](https://github.com/higgsfield-ai/cli) |
 
 ## Installation and Usage
 

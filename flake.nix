@@ -31,6 +31,7 @@
       deepseek-harness = pkgs.callPackage ./pkgs/deepseek-harness {};
       oh-my-pi = pkgs.callPackage ./pkgs/oh-my-pi {};
       mtplvcap = pkgs.callPackage ./pkgs/mtplvcap {};
+      higgsfield = pkgs.callPackage ./pkgs/higgsfield {};
       default = self.packages.${system}.godap;
     });
 
@@ -63,6 +64,7 @@
       deepseek-harness = self.packages.${final.system}.deepseek-harness;
       oh-my-pi = self.packages.${final.system}.oh-my-pi;
       mtplvcap = self.packages.${final.system}.mtplvcap;
+      higgsfield = self.packages.${final.system}.higgsfield;
     };
   };
 }

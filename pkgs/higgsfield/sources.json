@@ -1,0 +1,21 @@
+{
+  "version": "1.1.26",
+  "platforms": {
+    "x86_64-linux": {
+      "asset": "hf_1.1.26_linux_amd64.tar.gz",
+      "hash": "sha256-XWZvrnDJm3OIaQGRpknRSHliJQ7VCCDgee39H/rHv1s="
+    },
+    "aarch64-linux": {
+      "asset": "hf_1.1.26_linux_arm64.tar.gz",
+      "hash": "sha256-1z86St9mo5s5L/MaH5Tgy4lx6WiPJMQkj+Vc77nGlIU="
+    },
+    "x86_64-darwin": {
+      "asset": "hf_1.1.26_darwin_amd64.tar.gz",
+      "hash": "sha256-vh8evT3orduJomlbRZonE3j5S4ZdEMBdQKaC/KKOeWg="
+    },
+    "aarch64-darwin": {
+      "asset": "hf_1.1.26_darwin_arm64.tar.gz",
+      "hash": "sha256-oL/1EaFoM/Muoojp+JTuFAQybrFBQWg5fbiDbM3O7Zs="
+    }
+  }
+}
