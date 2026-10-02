@@ -24,13 +24,13 @@
 in
   buildGoModule (finalAttrs: {
     pname = "ollama";
-    version = "0.34.4";
+    version = "0.35.1";
 
     src = fetchFromGitHub {
       owner = "ollama";
       repo = "ollama";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-Wg1lVSJjN67TSIX75Xp/QyiuCW+HirpdJZIm92J0j6o=";
+      hash = "sha256-5qJyJhqL/Zhfq2s/Z3x5Sq0GFgBai812cQkgNq82nm4=";
     };
 
     vendorHash = "sha256-45FfI47tNHBPYOBLRrwuhADCUtkjAhlFrExlEy9piMI=";
