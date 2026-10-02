@@ -9,6 +9,10 @@
 # 2026-09-28: Bumped to 0.87.1. New chord workspace (dep of protocol, agent,
 #             client, coding-agent) is compiled from source and copied into
 #             node_modules alongside ai/agent/tui.
+# 2026-10-02: Bumped to 1.0.0. TypeScript 7 (native tsgo) replaces
+#             @typescript/native-preview, so workspaces build with plain tsc.
+#             New workspaces codemode, mcp, durable and server; coding-agent
+#             additionally depends on pi-codemode and pi-mcp at runtime.
 {
   lib,
   buildNpmPackage,
@@ -27,10 +31,10 @@
   # build time, which the sandbox can't do. The matching npm tarball (@earendil-works/pi-ai,
   # same version) ships that catalog already generated in dist/, so we drop its dist/ in
   # as the packages/ai build output and skip building pi-ai from source entirely.
-  version = "0.87.1";
+  version = "1.0.0";
   piAiNpm = fetchurl {
     url = "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-${version}.tgz";
-    hash = "sha256-NbRDLyfMJmX4a+67mvajmxJRlwiDwwRL2L5PToxzHKA=";
+    hash = "sha256-85uZwpuFmPF1sQhA5dKoGYPnwM5crk19+DoQB0R9LCs=";
   };
 in
   buildNpmPackage (finalAttrs: {
@@ -41,10 +45,10 @@ in
       owner = "earendil-works";
       repo = "pi";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-GUhlq6t+l6iiViOZ0bkV28v3ZDqcLvEwpZpYZ5JAyDk=";
+      hash = "sha256-CGznIVHXG6gr2F8vzHcR/v4P9xJgZHeMTt/CJ/kB78o=";
     };
 
-    npmDepsHash = "sha256-JBIYoP2vvRNz1HONNvDJ1U3c+nmCJ7/VgNthRTkrkIA=";
+    npmDepsHash = "sha256-ndEvWdB6sa5nNNtabk2OMZKUFG9x3op185deZHxFnXk=";
 
     npmWorkspace = "packages/coding-agent";
 
@@ -57,19 +61,23 @@ in
 
     # pi-ai's dist/ comes from its npm tarball (see piAiNpm) instead of being built
     # from source, to avoid the network-bound generate-models step. The remaining
-    # workspaces are compiled from source in dependency order: chord, then
-    # tui/telemetry -> agent, protocol -> client -> coding-agent (protocol and
-    # client both consume chord's types).
+    # workspaces are compiled from source with TypeScript 7 in the upstream root
+    # build order: chord, tui, telemetry, codemode, mcp, durable, agent, protocol,
+    # client, server, then coding-agent.
     buildPhase = ''
       runHook preBuild
 
       tar -xzf ${piAiNpm} -C packages/ai --strip-components=1 package/dist
-      npx tsgo -p packages/chord/tsconfig.build.json
-      npx tsgo -p packages/tui/tsconfig.build.json
-      npx tsgo -p packages/telemetry/tsconfig.build.json
-      npx tsgo -p packages/protocol/tsconfig.build.json
-      npx tsgo -p packages/agent/tsconfig.build.json
-      npx tsgo -p packages/client/tsconfig.build.json
+      npx tsc -p packages/chord/tsconfig.build.json
+      npx tsc -p packages/tui/tsconfig.build.json
+      npx tsc -p packages/telemetry/tsconfig.build.json
+      npx tsc -p packages/codemode/tsconfig.build.json
+      npx tsc -p packages/mcp/tsconfig.build.json
+      npx tsc -p packages/durable/tsconfig.build.json
+      npx tsc -p packages/agent/tsconfig.build.json
+      npx tsc -p packages/protocol/tsconfig.build.json
+      npx tsc -p packages/client/tsconfig.build.json
+      npx tsc -p packages/server/tsconfig.build.json
       npm run build --workspace=packages/coding-agent
 
       runHook postBuild
@@ -85,11 +93,10 @@ in
         # Replace workspace deps needed at runtime with real copies
         for ws in @earendil-works/pi-ai:packages/ai \
                   @earendil-works/pi-agent-core:packages/agent \
-                  @earendil-works/pi-telemetry:packages/telemetry \
-                  @earendil-works/pi-protocol:packages/protocol \
-                  @earendil-works/pi-client:packages/client \
                   @earendil-works/pi-tui:packages/tui \
-                  @earendil-works/chord:packages/chord; do
+                  @earendil-works/chord:packages/chord \
+                  @earendil-works/pi-codemode:packages/codemode \
+                  @earendil-works/pi-mcp:packages/mcp; do
           IFS=: read -r pkg src <<< "$ws"
           rm "$nm/$pkg"
           cp -r "$src" "$nm/$pkg"
