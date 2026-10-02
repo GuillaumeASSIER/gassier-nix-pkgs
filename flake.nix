@@ -21,15 +21,11 @@
     in {
       godap = pkgs.callPackage ./pkgs/godap {};
       mimo-code = pkgs.callPackage ./pkgs/mimo-code {};
-      oh-my-openagent = pkgs.callPackage ./pkgs/oh-my-openagent {};
       torlink = pkgs.callPackage ./pkgs/torlink {};
-      pi-coding-agent = pkgs.callPackage ./pkgs/pi-coding-agent {};
       murmure = pkgs.callPackage ./pkgs/murmure {};
-      opencode = pkgs.callPackage ./pkgs/opencode {};
       ollama = pkgs.callPackage ./pkgs/ollama {};
       stoat-desktop = pkgs.callPackage ./pkgs/stoat-desktop {};
       deepseek-harness = pkgs.callPackage ./pkgs/deepseek-harness {};
-      oh-my-pi = pkgs.callPackage ./pkgs/oh-my-pi {};
       mtplvcap = pkgs.callPackage ./pkgs/mtplvcap {};
       higgsfield = pkgs.callPackage ./pkgs/higgsfield {};
       msgvault = pkgs.callPackage ./pkgs/msgvault {};
@@ -55,15 +51,11 @@
     overlays.default = final: prev: {
       godap = self.packages.${final.system}.godap;
       mimo-code = self.packages.${final.system}.mimo-code;
-      oh-my-openagent = self.packages.${final.system}.oh-my-openagent;
       torlink = self.packages.${final.system}.torlink;
-      pi-coding-agent = self.packages.${final.system}.pi-coding-agent;
       murmure = self.packages.${final.system}.murmure;
-      opencode = self.packages.${final.system}.opencode;
       ollama = self.packages.${final.system}.ollama;
       stoat-desktop = self.packages.${final.system}.stoat-desktop;
       deepseek-harness = self.packages.${final.system}.deepseek-harness;
-      oh-my-pi = self.packages.${final.system}.oh-my-pi;
       mtplvcap = self.packages.${final.system}.mtplvcap;
       higgsfield = self.packages.${final.system}.higgsfield;
       msgvault = self.packages.${final.system}.msgvault;

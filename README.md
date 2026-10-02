@@ -8,15 +8,11 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | --- | --- | --- |
 | godap | 2.12.2 | [Macmod/godap](https://github.com/Macmod/godap) |
 | mimo-code | 0.1.15 | [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) |
-| oh-my-openagent | 5.1.10 | [code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) |
-| pi-coding-agent | 1.0.0 | [earendil-works/pi](https://github.com/earendil-works/pi) |
 | murmure | 1.11.3 | [Kieierra/murmure](https://github.com/Kieirra/murmure) |
 | torlink | 1.9.0 | [baairon/torlink](https://github.com/baairon/torlink) |
-| opencode | 1.18.34 | [anomalyco/opencode (releases)](https://github.com/anomalyco/opencode/releases) |
 | ollama | 0.35.1 | [ollama/ollama](https://github.com/ollama/ollama) |
 | stoat-desktop | 1.5.4 | [stoatchat/for-desktop](https://github.com/stoatchat/for-desktop) |
 | deepseek-harness | 0.2.0-rc.2 | [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) |
-| oh-my-pi | 18.4.12 | [can1357/oh-my-pi (releases)](https://github.com/can1357/oh-my-pi/releases) |
 | mtplvcap | 1.6.2 | [puhitaku/mtplvcap](https://github.com/puhitaku/mtplvcap) |
 | higgsfield | 1.1.26 | [higgsfield-ai/cli](https://github.com/higgsfield-ai/cli) |
 | msgvault | 0.20.0 | [kenn-io/msgvault](https://github.com/kenn-io/msgvault) |
