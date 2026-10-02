@@ -10,8 +10,8 @@
     systems = [
       "x86_64-linux"
       "aarch64-linux"
-      "x86_64-darwin"
       "aarch64-darwin"
+      # x86_64-darwin dropped: nixpkgs 26.11 no longer supports it.
     ];
     forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f system);
     pkgsFor = system: nixpkgs.legacyPackages.${system};
