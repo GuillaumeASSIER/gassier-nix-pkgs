@@ -19,6 +19,7 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | oh-my-pi | 18.4.1 | [can1357/oh-my-pi (releases)](https://github.com/can1357/oh-my-pi/releases) |
 | mtplvcap | 1.6.2 | [puhitaku/mtplvcap](https://github.com/puhitaku/mtplvcap) |
 | higgsfield | 1.1.26 | [higgsfield-ai/cli](https://github.com/higgsfield-ai/cli) |
+| msgvault | 0.20.0 | [kenn-io/msgvault](https://github.com/kenn-io/msgvault) |
 
 ## Installation and Usage
 

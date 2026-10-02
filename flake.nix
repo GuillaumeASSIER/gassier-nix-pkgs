@@ -32,6 +32,7 @@
       oh-my-pi = pkgs.callPackage ./pkgs/oh-my-pi {};
       mtplvcap = pkgs.callPackage ./pkgs/mtplvcap {};
       higgsfield = pkgs.callPackage ./pkgs/higgsfield {};
+      msgvault = pkgs.callPackage ./pkgs/msgvault {};
       default = self.packages.${system}.godap;
     });
 
@@ -65,6 +66,7 @@
       oh-my-pi = self.packages.${final.system}.oh-my-pi;
       mtplvcap = self.packages.${final.system}.mtplvcap;
       higgsfield = self.packages.${final.system}.higgsfield;
+      msgvault = self.packages.${final.system}.msgvault;
     };
   };
 }
