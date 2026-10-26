@@ -7,6 +7,7 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | Package | Version | Source |
 | --- | --- | --- |
 | godap | 2.12.2 | [Macmod/godap](https://github.com/Macmod/godap) |
+| gitea-cli | 0.1.0 | [gitea/cli](https://gitea.com/gitea/cli) |
 | mimo-code | 0.1.15 | [XiaomiMiMo/MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) |
 | murmure | 1.11.3 | [Kieierra/murmure](https://github.com/Kieirra/murmure) |
 | torlink | 1.9.0 | [baairon/torlink](https://github.com/baairon/torlink) |
@@ -16,6 +17,9 @@ Personal Nix flake repository hosting custom packages based on the latest stable
 | mtplvcap | 1.6.2 | [puhitaku/mtplvcap](https://github.com/puhitaku/mtplvcap) |
 | higgsfield | 1.1.26 | [higgsfield-ai/cli](https://github.com/higgsfield-ai/cli) |
 | msgvault | 0.20.0 | [kenn-io/msgvault](https://github.com/kenn-io/msgvault) |
+| lightcraft | 0.14.0 | [storytold/lightcraft](https://github.com/storytold/lightcraft) |
+| photocraft | 0.16.0 | [storytold/photocraft](https://github.com/storytold/photocraft) |
+| filmcraft | 0.13.0 | [storytold/filmcraft](https://github.com/storytold/filmcraft) |
 
 ## Installation and Usage
 

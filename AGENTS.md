@@ -26,8 +26,9 @@ nix develop
 | Package | Builder | Hashes to update on bump |
 | --- | --- | --- |
 | godap | `buildGoModule` | `src.hash`, `vendorHash` |
+| gitea-cli | `buildGo127Module` | `src.hash`, `vendorHash` — hosted on gitea.com; `nix-update --flake gitea-cli` handles the Gitea forge (tag `vX.Y.Z`) |
 | mimo-code | `stdenvNoCC` | `src.hash`, `node_modules.outputHash` |
-| torlink | `buildNpmPackage` | `src.hash`, `npmDepsHash`, `nodeDatachannelPrebuilt.hash` |
+| torlink | `buildNpmPackage` | `src.hash`, `npmDepsHash` |
 | deepseek-harness | `stdenv` (pnpm monorepo) | `src.hash`, `pnpmDeps.hash` — no git tags upstream: bump manually by pinning a new master commit (rev + version from `package.json` + hashes) |
 |mtplvcap|`buildGoModule`|`src.hash`, `vendorHash`|
 
