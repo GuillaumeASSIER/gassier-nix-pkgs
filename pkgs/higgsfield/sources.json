@@ -1,21 +1,21 @@
 {
-  "version": "1.1.26",
+  "version": "1.2.3",
   "platforms": {
     "x86_64-linux": {
-      "asset": "hf_1.1.26_linux_amd64.tar.gz",
-      "hash": "sha256-XWZvrnDJm3OIaQGRpknRSHliJQ7VCCDgee39H/rHv1s="
+      "asset": "hf_1.2.3_linux_amd64.tar.gz",
+      "hash": "sha256-DtWUrkJkbUlLnq7sQ1khH2z9ZTzk95CqTKakjBpDFSk="
     },
     "aarch64-linux": {
-      "asset": "hf_1.1.26_linux_arm64.tar.gz",
-      "hash": "sha256-1z86St9mo5s5L/MaH5Tgy4lx6WiPJMQkj+Vc77nGlIU="
+      "asset": "hf_1.2.3_linux_arm64.tar.gz",
+      "hash": "sha256-76MC1tGJuB2Y0JiEgw9rD4nKt6jAcReCW3WNLMa0klk="
     },
     "x86_64-darwin": {
-      "asset": "hf_1.1.26_darwin_amd64.tar.gz",
-      "hash": "sha256-vh8evT3orduJomlbRZonE3j5S4ZdEMBdQKaC/KKOeWg="
+      "asset": "hf_1.2.3_darwin_amd64.tar.gz",
+      "hash": "sha256-yXxwISftdDgb0k6v3IzwuRfZxKHtHVEkg6dnbdHT/So="
     },
     "aarch64-darwin": {
-      "asset": "hf_1.1.26_darwin_arm64.tar.gz",
-      "hash": "sha256-oL/1EaFoM/Muoojp+JTuFAQybrFBQWg5fbiDbM3O7Zs="
+      "asset": "hf_1.2.3_darwin_arm64.tar.gz",
+      "hash": "sha256-YT2DuSiKvewIuF4NqYTfYvr1UOORl2x/5EaNWqNNrq4="
     }
   }
 }

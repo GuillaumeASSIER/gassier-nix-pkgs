@@ -1,21 +1,21 @@
 {
-  "version": "0.20.0",
+  "version": "0.22.0",
   "platforms": {
     "x86_64-linux": {
-      "asset": "msgvault_0.20.0_linux_amd64.tar.gz",
-      "hash": "sha256-a5nwP0H+CzdfGbL5ICs11yoRsw2hpR9QxIUDspkwXgw="
+      "asset": "msgvault_0.22.0_linux_amd64.tar.gz",
+      "hash": "sha256-OxRvHB54xiYHLR9EGsWekWyWdmRy+xF9J6cJjYInQKE="
     },
     "aarch64-linux": {
-      "asset": "msgvault_0.20.0_linux_arm64.tar.gz",
-      "hash": "sha256-717zAsSANydJ2pcfcSoHb+mBOu+RLXCL0AoVqYgwjHw="
+      "asset": "msgvault_0.22.0_linux_arm64.tar.gz",
+      "hash": "sha256-kF2ahModfmwex1nZpfmQH/KzeTDmJ2ClJ0LVztFqBro="
     },
     "x86_64-darwin": {
-      "asset": "msgvault_0.20.0_darwin_amd64.tar.gz",
-      "hash": "sha256-LwUn8AvnDwCdRORYzTIrNYbwZJpHtfgfO+loHr6rPhQ="
+      "asset": "msgvault_0.22.0_darwin_amd64.tar.gz",
+      "hash": "sha256-fXpHoFsxuo9YDsmGhHQSnqTfVr9wV3F3/LkfJK9KMrM="
     },
     "aarch64-darwin": {
-      "asset": "msgvault_0.20.0_darwin_arm64.tar.gz",
-      "hash": "sha256-QnAhohRHW6E5l78i3KDFyZqcw6b7X8wVhJTC1BMV1eE="
+      "asset": "msgvault_0.22.0_darwin_arm64.tar.gz",
+      "hash": "sha256-P3y2wYKKeFt0Hisin31F1Pu9h/xPSVMDL8d+un39tx8="
     }
   }
 }

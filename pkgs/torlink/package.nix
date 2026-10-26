@@ -2,7 +2,6 @@
   lib,
   buildNpmPackage,
   fetchFromGitHub,
-  fetchurl,
   nodejs_22,
   wl-clipboard,
   xclip,
@@ -10,7 +9,7 @@
 }:
 buildNpmPackage (finalAttrs: {
   pname = "torlink";
-  version = "1.9.0";
+  version = "1.10.0";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -19,28 +18,20 @@ buildNpmPackage (finalAttrs: {
     owner = "baairon";
     repo = "torlink";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-DE4ZlIF1nHn2btHpT+X4BlhnW35OgDMWDbCVruMYN5s=";
+    hash = "sha256-PS2CYr/5XTCcmxhAxVH3MXkCKNzFiXvNhjhp8hXPbKk=";
   };
 
   nodejs = nodejs_22;
-  npmDepsHash = "sha256-VWa4IQLNRxZWjHJfW2c/BFkfaG4Hvtb+n1A2R24G8cc=";
+  npmDepsHash = "sha256-cdpgmNsc0T2q0Cu1gXo0biMaUTR8VNAIFPkx572TsQ0=";
 
   # ignore-scripts for ip-set broken preinstall
   npmFlags = ["--ignore-scripts"];
-
-  # node-datachannel binary tarball
-  nodeDatachannelPrebuilt = fetchurl {
-    url = "https://github.com/murat-dogan/node-datachannel/releases/download/v0.32.3/node-datachannel-v0.32.3-napi-v8-linux-x64.tar.gz";
-    hash = "sha256-QJKvyc1ZSjMm6xvYI9pFKyJ7dC6oIiaJss6m9zRM9no=";
-  };
 
   postBuild = ''
     node scripts/postbuild.cjs
   '';
 
   postInstall = ''
-    tar -xzf ${finalAttrs.nodeDatachannelPrebuilt} \
-      -C "$out/lib/node_modules/torlnk/node_modules/node-datachannel"
     wrapProgram "$out/bin/torlnk" \
       --prefix PATH : ${lib.makeBinPath [wl-clipboard xclip]}
   '';
