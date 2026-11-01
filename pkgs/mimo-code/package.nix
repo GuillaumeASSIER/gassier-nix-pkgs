@@ -15,7 +15,7 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "mimo-code";
-  version = "0.1.15";
+  version = "0.1.16";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -24,7 +24,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     owner = "XiaomiMiMo";
     repo = "MiMo-Code";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-TNtRSn4G5s8JyXHjv/pyxlwMYIF89fhCdyDEyXHtLfY=";
+    hash = "sha256-nX46aj2BuUBPY715pem7iOINX0VuWV7wwQiVCwuO6lk=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {
@@ -64,11 +64,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
         then "linux"
         else "darwin"
       } \
-        --filter '!./' \
-        --filter './packages/opencode' \
-        --filter './packages/desktop' \
-        --filter './packages/app' \
-        --filter './packages/shared' \
         --ignore-scripts \
         --no-progress
       bun --bun ${./scripts/canonicalize-node-modules.ts}
@@ -88,7 +83,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     dontFixup = true;
 
-    outputHash = "sha256-KlNRIWDg0TohBxqmK1LXQQPIME8A1QbYUtThrnEwd+M=";
+    outputHash = "sha256-rL3SEyw0rYRSeWTRKntS/M9bC6SwcM5l+Ig5xYqsYPM=";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };
@@ -114,81 +109,16 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   '';
 
   postPatch = ''
-    # Both build scripts refuse to run on a bun other than the one pinned in
-    # package.json's `packageManager` field. packages/script/src/index.ts does a
-    # `^`-range check, packages/opencode/script/build.ts a strict equality one;
-    # nixpkgs' bun is newer than the pin, so strip both guards. The built output
+    # packages/cli/script/build.ts refuses to run on a bun other than the one
+    # pinned in package.json's `packageManager` field (strict equality);
+    # nixpkgs' bun is newer than the pin, so strip the guard. The built output
     # is a bun-compiled binary and behavior does not depend on the patch level.
-    sed -i '/^if (!semver.satisfies(process.versions.bun, expectedBunVersionRange)) {$/,/^}$/d' packages/script/src/index.ts
-    sed -i '/^if (pinned && Bun.version !== pinned) {$/,/^}$/d' packages/opencode/script/build.ts
+    sed -i '/^if (pinned && Bun.version !== pinned) {$/,/^}$/d' packages/cli/script/build.ts
 
-    # v0.1.1 bug: code imports ./mimo-free which doesn't exist in the repo (fixed in main).
-    # Provide a stub so the bundler resolves the import; functionality is disabled at runtime.
-    # TODO(mimo-code>0.1.9): remove this stub once upstream ships mimo-free.ts in a tagged release.
-    cat > packages/opencode/src/plugin/mimo-free.ts <<'STUB'
-    import type { Hooks, PluginInput, Plugin as PluginInstance } from "@mimo-ai/plugin"
-
-    export const MimoFreeAuthPlugin: PluginInstance = async (_input: PluginInput) => {
-      return {} as Hooks
-    }
-
-    export const MimoFree = {
-      chatBaseUrl: "",
-      async verify(): Promise<{ fingerprint: string; exp: number }> {
-        throw new Error("mimo-free plugin not available in this build")
-      },
-    }
-    STUB
-
-    # v0.1.1 bug: generate cmd imports prettier which is a root devDep, not in opencode scope.
-    # Emit raw JSON instead of going through prettier; the generated spec stays valid JSON.
-    # TODO(mimo-code>0.1.9): remove this rewrite once upstream moves prettier into the opencode workspace.
-    cat > packages/opencode/src/cli/cmd/generate.ts <<'GEN'
-    import { Server } from "../../server/server"
-    import type { CommandModule } from "yargs"
-
-    export const GenerateCommand = {
-      command: "generate",
-      handler: async () => {
-        const specs = await Server.openapi()
-        for (const item of Object.values(specs.paths)) {
-          for (const method of ["get", "post", "put", "delete", "patch"] as const) {
-            const operation = item[method]
-            if (!operation?.operationId) continue
-            // @ts-expect-error
-            operation["x-codeSamples"] = [
-              {
-                lang: "js",
-                source: [
-                  `import { createOpencodeClient } from "@mimo-ai/sdk`,
-                  ``,
-                  `const client = createOpencodeClient()`,
-                  `await client.''${operation.operationId}({`,
-                  `  ...`,
-                  `})`,
-                ].join("\n"),
-              },
-            ]
-          }
-        }
-        const raw = JSON.stringify(specs, null, 2)
-
-        await new Promise<void>((resolve, reject) => {
-          process.stdout.write(raw, (err) => {
-            if (err) reject(err)
-            else resolve()
-          })
-        })
-      },
-    } satisfies CommandModule
-    GEN
   '';
-
   env = {
     MODELS_DEV_API_JSON = "${models-dev}/dist/_api.json";
-    OPENCODE_DISABLE_MODELS_FETCH = true;
-    OPENCODE_VERSION = finalAttrs.version;
-    OPENCODE_CHANNEL = "stable";
+    MIMOCODE_DISABLE_MODELS_FETCH = true;
     MIMOCODE_VERSION = finalAttrs.version;
     MIMOCODE_CHANNEL = "stable";
   };
@@ -196,7 +126,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   buildPhase = ''
     runHook preBuild
 
-    cd ./packages/opencode
+    cd ./packages/cli
     bun --bun ./script/build.ts --single --skip-install
     bun --bun ./script/schema.ts schema.json
 
@@ -229,7 +159,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   doInstallCheck = true;
   versionCheckKeepEnvironment = [
     "HOME"
-    "OPENCODE_DISABLE_MODELS_FETCH"
+    "MIMOCODE_DISABLE_MODELS_FETCH"
   ];
   versionCheckProgramArg = "--version";
 

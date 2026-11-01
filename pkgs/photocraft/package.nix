@@ -9,6 +9,7 @@
   stdenv,
   rustPlatform,
   fetchFromGitHub,
+  runCommand,
   pkg-config,
   makeWrapper,
   wayland,
@@ -25,7 +26,14 @@
   autoAddDriverRunpath,
   craft-fonts,
 }: let
-  version = "0.16.0";
+  version = "0.18.0";
+
+  # Upstream tags v0.13.0/v0.15.0/v0.16.0/v0.18.0 pin craft-libs at 92d392c, whose
+  # crates/menu manifest Cargo 1.95+ rejects (`default-features = false` cannot
+  # override the workspace default). The one-line fix landed upstream as e11f9d9
+  # just after those tags were cut, so re-pin the lock to that commit.
+  brokenCraftLibsRev = "92d392cff132eaf53e13afff77f38b5c11b73aa0";
+  craftLibsRev = "e11f9d9aebea5f6b8e74643c1ea1ed172ba5f545";
 
   isLinux = stdenv.hostPlatform.isLinux;
 
@@ -44,7 +52,15 @@
     vulkan-loader
   ];
 in
-  rustPlatform.buildRustPackage (finalAttrs: {
+  rustPlatform.buildRustPackage (finalAttrs: let
+    # Byte-identical to the lock shipped in the build tree (see postPatch), so
+    # cargo's vendoring consistency check and --locked agree.
+    patchedLock = runCommand "Cargo.lock" {} ''
+      substitute ${finalAttrs.src}/Cargo.lock $TMPDIR/Cargo.lock \
+        --replace-fail ${brokenCraftLibsRev} ${craftLibsRev}
+      awk '/^\[\[patch\.unused\]\]/{f=1;next} /^\[/{f=0} !f' $TMPDIR/Cargo.lock > $out
+    '';
+  in {
     pname = "photocraft";
     inherit version;
 
@@ -52,17 +68,31 @@ in
       owner = "storytold";
       repo = "photocraft";
       rev = "v${version}";
-      hash = "sha256-uaZmzQb4B1zZ2XrZHjHzI/uEVGdoYRFeh10GHIxzjDA=";
+      hash = "sha256-kEiaf7fAwegv88D/jrti2fc7UIopbKAl5L4cq3EbKX4=";
     };
 
+    # Keep the build-time lock in sync with the re-pinned vendoring lock above.
+    postPatch = ''
+      substituteInPlace Cargo.toml --replace-fail ${brokenCraftLibsRev} ${craftLibsRev}
+
+      # Cargo validates every [patch.crates-io] entry against the vendored
+      # patch source, but only crates the lock actually resolves are vendored.
+      # Drop the entries the lock records as unused (egui_demo_lib, ...).
+      while IFS= read -r unused; do
+        sed -i "/^$unused = /d" Cargo.toml
+      done < <(awk '/^\[\[patch\.unused\]\]/{f=1;next} /^\[/{f=0} f && /^name = /{gsub(/"/,"",$3); print $3}' Cargo.lock)
+
+      cp ${patchedLock} Cargo.lock
+    '';
+
     cargoLock = {
-      lockFile = "${finalAttrs.src}/Cargo.lock";
+      lockFile = patchedLock;
       outputHashes = {
-        "craft-docpath-0.1.0" = "sha256-ufVzS079k4yeeiPExB0oW/nQW5Fi8Xog0tQoDRL+26k=";
-        "craft-jpeg-0.1.0" = "sha256-UuN/HpAyX3HdmkV46d0GY+n0yzlCmImetwlG0anzhRM=";
-        "craft-print-0.1.0" = "sha256-uXP0zITi8i1JDUyc451FmZ0Pl1ZK4D0rlTJQmGFVm0I=";
-        "craft-ui-0.1.0" = "sha256-VhLeT7VLdZAIz6gR9PdFI34IJxHsGF8NE0uzFCN2vIU=";
+        "craft-docpath-0.1.0" = "sha256-yTMWFdJDxJnbwHbing7TsrbmKRMhrjceMz5RwFJYt5g=";
+        "craft-update-0.1.0" = "sha256-pVw3q17lCuOc0eX0S3pWjEtLLo1SaIno98YRlgTk6vg=";
         "craft-winprint-gdi-0.1.0" = "sha256-n1pcNaBGrnvSsE5MedeSRczJOMhfmF/LGFiiDTrG1GM=";
+        "ecolor-0.37.0" = "sha256-xzgBk6K1X/MZ8WUlIdy+r/0cf1FDkhJJuwQHZX+WY9U=";
+        "winit-0.30.13" = "sha256-+67bk7cqhM5VHqROL3PeghmhKJvlPIxhU73ay45vaxw=";
         "winprint-0.2.1" = "sha256-wnz/VbqQ3j/x1PEq6Elxu/oSjVqdONfqQmZ31NsTIIc=";
       };
     };

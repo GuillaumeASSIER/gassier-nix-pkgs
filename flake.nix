@@ -7,7 +7,7 @@
   # crates/text build script embeds when CRAFT_FONTS_DIR is set (same pin as
   # upstream storytold/lightcraft flake.nix).
   inputs.craft-fonts = {
-    url = "github:storytold/craft-fonts/3d9ab3a132ed0eff457e424226a435a901da30d3";
+    url = "github:storytold/craft-fonts/b076417b5880bd4154bd22f00695b1d28c6bea83";
     flake = false;
   };
 
