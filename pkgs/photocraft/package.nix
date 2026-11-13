@@ -26,14 +26,8 @@
   autoAddDriverRunpath,
   craft-fonts,
 }: let
-  version = "0.18.0";
-
-  # Upstream tags v0.13.0/v0.15.0/v0.16.0/v0.18.0 pin craft-libs at 92d392c, whose
-  # crates/menu manifest Cargo 1.95+ rejects (`default-features = false` cannot
-  # override the workspace default). The one-line fix landed upstream as e11f9d9
-  # just after those tags were cut, so re-pin the lock to that commit.
-  brokenCraftLibsRev = "92d392cff132eaf53e13afff77f38b5c11b73aa0";
-  craftLibsRev = "e11f9d9aebea5f6b8e74643c1ea1ed172ba5f545";
+  # Version matches the upstream [workspace.package] version at this tag (v0.23.1).
+  version = "0.23.1";
 
   isLinux = stdenv.hostPlatform.isLinux;
 
@@ -56,9 +50,7 @@ in
     # Byte-identical to the lock shipped in the build tree (see postPatch), so
     # cargo's vendoring consistency check and --locked agree.
     patchedLock = runCommand "Cargo.lock" {} ''
-      substitute ${finalAttrs.src}/Cargo.lock $TMPDIR/Cargo.lock \
-        --replace-fail ${brokenCraftLibsRev} ${craftLibsRev}
-      awk '/^\[\[patch\.unused\]\]/{f=1;next} /^\[/{f=0} !f' $TMPDIR/Cargo.lock > $out
+      awk '/^\[\[patch\.unused\]\]/{f=1;next} /^\[/{f=0} !f' ${finalAttrs.src}/Cargo.lock > $out
     '';
   in {
     pname = "photocraft";
@@ -68,13 +60,14 @@ in
       owner = "storytold";
       repo = "photocraft";
       rev = "v${version}";
-      hash = "sha256-kEiaf7fAwegv88D/jrti2fc7UIopbKAl5L4cq3EbKX4=";
+      hash = "sha256-EhyYkRRQBvVX6CbSJX8gk4UOi/zHlE/jgC8wYUfm0ew=";
     };
 
-    # Keep the build-time lock in sync with the re-pinned vendoring lock above.
+    # Sync the build-time lock with the vendoring lock above: drop the
+    # [patch.crates-io] entries cargo would reject against the vendored sources
+    # (only crates the lock actually resolves are vendored), then install the
+    # patched lock.
     postPatch = ''
-      substituteInPlace Cargo.toml --replace-fail ${brokenCraftLibsRev} ${craftLibsRev}
-
       # Cargo validates every [patch.crates-io] entry against the vendored
       # patch source, but only crates the lock actually resolves are vendored.
       # Drop the entries the lock records as unused (egui_demo_lib, ...).
@@ -88,12 +81,13 @@ in
     cargoLock = {
       lockFile = patchedLock;
       outputHashes = {
-        "craft-docpath-0.1.0" = "sha256-yTMWFdJDxJnbwHbing7TsrbmKRMhrjceMz5RwFJYt5g=";
-        "craft-update-0.1.0" = "sha256-pVw3q17lCuOc0eX0S3pWjEtLLo1SaIno98YRlgTk6vg=";
-        "craft-winprint-gdi-0.1.0" = "sha256-n1pcNaBGrnvSsE5MedeSRczJOMhfmF/LGFiiDTrG1GM=";
+        "craft-docpath-0.1.0" = "sha256-BD+uNOEutI9lGz1sWcdOBC4+VgT/7HlwpWGY73ZiGxs=";
+        "craft-heif-0.1.0" = "sha256-3WBe1agO+EDxC4Y+Jkp4y31rjqTQZCSL5FbUrVD2bqI=";
+        "craft-pcraft-format-0.1.0" = "sha256-x3pHb9RI7FwssE7kivrhRo/0lIbrJee7Ll5Wrn96AMw=";
+        "craft-winprint-gdi-0.1.0" = "sha256-HGJ4iAWJxBVXc9bSitSSOma2nqn35KgWs2ATHUyjX1E=";
         "ecolor-0.37.0" = "sha256-xzgBk6K1X/MZ8WUlIdy+r/0cf1FDkhJJuwQHZX+WY9U=";
         "winit-0.30.13" = "sha256-+67bk7cqhM5VHqROL3PeghmhKJvlPIxhU73ay45vaxw=";
-        "winprint-0.2.1" = "sha256-wnz/VbqQ3j/x1PEq6Elxu/oSjVqdONfqQmZ31NsTIIc=";
+        "winprint-0.2.1" = "sha256-RfhnAfv5CquYhaO9TOMg80U/ukgCySuJ0aP6SwaVT/4=";
       };
     };
 

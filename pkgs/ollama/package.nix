@@ -18,19 +18,19 @@
   llamaCppSrc = fetchFromGitHub {
     owner = "ggml-org";
     repo = "llama.cpp";
-    tag = "b11963";
-    hash = "sha256-DUggBODOVSOydWopvdXt/K9ZiRrbWrl+mywpr1vjJwM=";
+    tag = "b12177";
+    hash = "sha256-/bZRn+Zy4bqdJUWDX3a4+HClrsST60uXiNJT26mTgI0=";
   };
 in
   buildGo127Module (finalAttrs: {
     pname = "ollama";
-    version = "0.40.13";
+    version = "0.40.16";
 
     src = fetchFromGitHub {
       owner = "ollama";
       repo = "ollama";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-cxpgG6l97S7f+XZy5Hb689MYpVnbaqxBhzHLL62zAKM=";
+      hash = "sha256-ita7MMcdRVBVNmOXnopJX31hnCaPHOx9079YGci5v18=";
     };
 
     vendorHash = "sha256-1mzJrZUHH2ouP6I+LVojHbft7No5AumqKZVq0I/Ubsg=";

@@ -16,21 +16,21 @@
 in
   stdenv.mkDerivation (finalAttrs: {
     pname = "deepseek-harness";
-    version = "0.2.2-alpha.2";
+    version = "0.2.2-rc.3";
 
     # Upstream publishes no git tags; pin the master commit this version was read from.
     src = fetchFromGitHub {
       owner = "deepseek-ai";
       repo = "deepseek-harness";
-      rev = "ce7073d51254c26cd63b22a60835b8f948deb447";
-      hash = "sha256-YeLUc7mvFVGMhXqpEu799orsds5CSpUKHvl99WkxhrI=";
+      rev = "39163dd30f703a79079e2d2446545cff3c453738";
+      hash = "sha256-7ssa8MVojSf0J24vQI9tWXTL6ZOBVjDOrPdbzZl5ImA=";
     };
 
     pnpmDeps = fetchPnpmDeps {
       inherit (finalAttrs) pname version src;
       inherit pnpm;
       fetcherVersion = 4;
-      hash = "sha256-D3dDgX55coJqEY31vwxiJuSFhlJeuEa3VfpN5Ooa+IE=";
+      hash = "sha256-72J0OffgUUTdFB6OPwy1VuD581lp/NroTGOZROn7kDg=";
     };
 
     nativeBuildInputs = [
@@ -48,7 +48,7 @@ in
       npm_config_offline = "true";
       # The client build stamps its artifacts with `git rev-parse HEAD`; the
       # unpacked Nix store source has no .git, so feed it the pinned commit.
-      DSH_CLIENT_COMMIT_HASH = "ce7073d51254c26cd63b22a60835b8f948deb447";
+      DSH_CLIENT_COMMIT_HASH = "39163dd30f703a79079e2d2446545cff3c453738";
       pnpm_config_offline = "true";
     };
 

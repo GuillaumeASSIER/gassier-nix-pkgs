@@ -15,7 +15,7 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "mimo-code";
-  version = "0.1.16";
+  version = "0.1.17";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -24,7 +24,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     owner = "XiaomiMiMo";
     repo = "MiMo-Code";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-nX46aj2BuUBPY715pem7iOINX0VuWV7wwQiVCwuO6lk=";
+    hash = "sha256-+PZ1pzYinkpHJ70eQKsS+frgCqaXKKcdfFqwxHskAL0=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {

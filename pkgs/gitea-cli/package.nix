@@ -6,21 +6,21 @@
 }:
 buildGo127Module rec {
   pname = "gitea-cli";
-  version = "0.2.0";
+  version = "1.2.0";
 
   src = fetchFromGitea {
     domain = "gitea.com";
     owner = "gitea";
     repo = "cli";
     tag = "v${version}";
-    hash = "sha256-9U69MDttAUXCaF8dUB0UXZWJFtAhBTBsFzHICL6lHck=";
+    hash = "sha256-ZW51bSQxm9LEksHpWt66HGg7jtu4iuz4+4a+R6ss9So=";
   };
 
   # To generate vendorHash:
   # 1. Set vendorHash to lib.fakeHash
   # 2. Build the derivation: nix build .#gitea-cli
   # 3. Copy the actual hash from the error message and replace lib.fakeHash
-  vendorHash = "sha256-Q1BqmZu1YEcWjEYUFOwjDuieRcHj0+3dsh0jEeSkqv0=";
+  vendorHash = "sha256-xj93kLq4uEuMymf/sdmZOz/pjfWAXbxnu9K2Xpis8PU=";
 
   subPackages = ["cmd/gt"];
 
